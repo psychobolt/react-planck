@@ -13,6 +13,9 @@ export const plugins = [
   }),
   commonjs({
     include: 'node_modules/**',
+    namedExports: {
+      'node_modules/planck-js/testbed/index.js': ['testbed'],
+    },
   }),
   babel({
     exclude: 'node_modules/**',

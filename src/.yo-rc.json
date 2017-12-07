@@ -1,0 +1,9 @@
+{
+  "@psychobolt/generator-react-renderer": {
+    "typesFilename": "Planck.types.js",
+    "renderer": "PlanckRenderer",
+    "rendererFilename": "Planck.renderer.js",
+    "container": "PlanckContainer",
+    "containerFilename": "Planck.container.js"
+  }
+}
