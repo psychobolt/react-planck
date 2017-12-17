@@ -15,9 +15,9 @@ React fiber renderer and component container for [Planck.js](http://piqnt.com/pl
 
 Recommended: Planck JS 0.1.x, React, React DOM 16.x.
 ```sh
-npm install --save @psychobolt/react-planck
+npm install --save react-planck
 or
-yarn add @psychobolt/react-paperjs
+yarn add react-paperjs
 ```
 
 ## Usage
