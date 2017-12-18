@@ -25,4 +25,8 @@ export const plugins = [
 
 export default {
   input: 'src/index.js',
+  external: [
+    'react',
+    'react-dom',
+  ],
 };
