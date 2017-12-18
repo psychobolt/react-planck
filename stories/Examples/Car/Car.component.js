@@ -1,7 +1,7 @@
 // @flow
 import React from 'react';
 import typeof Stage from 'stage-js/lib';
-import { Vec2, typeof Body as PlBody, typeof WheelJoint as PlWheelJoint } from 'planck-js/lib';
+import { Vec2, typeof Body as PlBody, typeof WheelJoint as PlWheelJoint } from 'planck-js';
 
 import { Body, Joint, Fixture, Circle, Polygon } from 'src';
 

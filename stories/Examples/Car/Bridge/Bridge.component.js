@@ -1,6 +1,6 @@
 // @flow
 import React from 'react';
-import { Vec2 } from 'planck-js/lib';
+import { Vec2 } from 'planck-js';
 
 import { Joint } from 'src';
 import Block from './Block';

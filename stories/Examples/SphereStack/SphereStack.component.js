@@ -1,5 +1,5 @@
 import React from 'react';
-import { Vec2 } from 'planck-js/lib';
+import { Vec2 } from 'planck-js';
 
 import { PlanckContainer, Body, Fixture, Edge, Circle } from 'src';
 

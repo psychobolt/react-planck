@@ -1,4 +1,4 @@
-import planck from 'planck-js/lib';
+import planck from 'planck-js';
 import _ from 'lodash';
 
 import { FixtureDef, JointDef } from './Types';

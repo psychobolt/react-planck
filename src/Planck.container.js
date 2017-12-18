@@ -1,6 +1,6 @@
 // @flow
 import React, { type Node } from 'react';
-import { World } from 'planck-js/lib';
+import { World } from 'planck-js';
 import { testbed } from 'planck-js/testbed';
 import PropTypes from 'prop-types';
 

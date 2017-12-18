@@ -1,4 +1,4 @@
-import { DistanceJoint, WheelJoint, RevoluteJoint } from 'planck-js/lib';
+import { DistanceJoint, WheelJoint, RevoluteJoint } from 'planck-js';
 
 const findBody = (body, id) => {
   for (let next = body; next; next = next.getNext()) {

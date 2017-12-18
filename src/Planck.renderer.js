@@ -1,5 +1,5 @@
 import Reconciler from 'react-reconciler';
-import { Body, Shape } from 'planck-js/lib';
+import { Body, Shape } from 'planck-js';
 import invariant from 'fbjs/lib/invariant';
 
 import TYPES from './Planck.types';

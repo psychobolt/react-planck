@@ -1,6 +1,6 @@
 // @flow
 import React from 'react';
-import { Vec2, typeof Body as PlBody } from 'planck-js/lib';
+import { Vec2, typeof Body as PlBody } from 'planck-js';
 
 import { Body, Fixture, Box } from 'src';
 

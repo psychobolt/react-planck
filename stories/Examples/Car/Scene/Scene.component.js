@@ -1,7 +1,7 @@
 // @flow
 import React from 'react';
 import typeof Stage from 'stage-js/lib';
-import { Vec2, typeof World as PlWorld } from 'planck-js/lib';
+import { Vec2, typeof World as PlWorld } from 'planck-js';
 import { testbed } from 'planck-js/testbed';
 
 import { PlanckContainer, Body, Joint, Fixture, Box } from 'src';
