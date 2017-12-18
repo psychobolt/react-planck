@@ -26,6 +26,7 @@ export const plugins = [
 export default {
   input: 'src/index.js',
   external: [
+    'planck-js',
     'react',
     'react-dom',
   ],
