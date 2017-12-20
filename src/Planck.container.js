@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 
 import PlanckRenderer from './Planck.renderer';
 import { CONSTANTS } from './Planck.types';
-import Testbed, { type Props as TestbedProps, type PropsWithStage } from './components/Testbed'
+import Testbed, { type Props as TestbedProps, type PropsWithStage } from './components/Testbed';
 
 type Props = {
   worldProps: {},
