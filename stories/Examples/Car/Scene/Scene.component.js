@@ -1,8 +1,5 @@
-// @flow
 import React from 'react';
-import typeof Stage from 'stage-js/lib';
-import { Vec2, typeof World as PlWorld } from 'planck-js';
-import { testbed } from 'planck-js/testbed';
+import { Vec2 } from 'planck-js';
 
 import { PlanckContainer, Body, Joint, Fixture, Box } from 'src';
 import Ground from '../Ground';
@@ -10,36 +7,39 @@ import Teeter from '../Teeter';
 import Bridge from '../Bridge';
 import Car from '../Car.component';
 
-type Props = {};
-
-export default class extends React.Component<Props> {
-  componentWillUnmount() {
-    Object.assign(this.stage, {
-      keydown: null,
-      step: null,
-    });
-    this.stage = null;
+export default class Scene extends React.Component {
+  static defaultProps = {
+    worldProps: {
+      gravity: new Vec2(0, -10),
+    },
   }
 
-  setCar = (ref: typeof Car) => { this.car = ref; }
+  state = {
+    started: false,
+  }
 
-  simulate = (world: PlWorld) => testbed(stage => {
-    this.stage = stage;
-    Object.assign(stage, {
-      keydown: this.car.onKeyDown(stage),
-      step: this.car.onStep(stage),
+  componentDidMount() {
+    this.start();
+  }
+
+  setCar = ref => { this.car = ref; }
+
+  start() {
+    this.setState({
+      started: this.car != null,
     });
-    return world;
-  })
+  }
 
-  stage: Stage
-  car: typeof Car
+  car = null;
 
   render() {
+    const viewProps = this.state.started ? config => ({
+      keydown: this.car.onKeyDown(config),
+      step: this.car.onStep(config),
+    }) : {};
     return (
       <PlanckContainer
-        {...this.props}
-        render={this.simulate}
+        viewProps={viewProps}
         worldProps={{
           gravity: new Vec2(0, -10),
         }}

@@ -1,7 +1,7 @@
 import planck from 'planck-js';
 import _ from 'lodash';
 
-import { FixtureDef, JointDef } from './Types';
+import { FixtureDef, JointDef } from './types';
 
 export const CONSTANTS = {
   World: 'World',

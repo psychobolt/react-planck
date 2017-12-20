@@ -1,38 +1,25 @@
 // @flow
-import React, { type Node } from 'react';
+import React, { type Node, type ComponentType } from 'react';
 import { World } from 'planck-js';
-import { testbed } from 'planck-js/testbed';
 import PropTypes from 'prop-types';
 
 import PlanckRenderer from './Planck.renderer';
 import { CONSTANTS } from './Planck.types';
-
-type TestbedProps = {
-  width: number,
-  height: number,
-};
+import { Testbed, type Props as TestbedProps, PropsWithStage } from './components';
 
 type Props = {
-  canvasProps: {},
   worldProps: {},
-  testbedProps: TestbedProps,
-  render: (world: typeof World, testbedProps: ?TestbedProps) => any,
+  view: ComponentType<any>,
+  viewProps: TestbedProps | PropsWithStage,
   renderer: typeof PlanckRenderer,
   children: Node
 };
 
-const defaultRender = (world: typeof World, testbedProps: TestbedProps) =>
-  testbed(defaultProps => {
-    Object.assign(defaultProps, testbedProps);
-    return world;
-  });
-
 export default class PlanckContainer extends React.Component<Props> {
   static defaultProps = {
-    canvasProps: {},
     worldProps: {},
     testbedProps: {},
-    render: defaultRender,
+    view: Testbed,
     renderer: PlanckRenderer,
     children: null,
   };
@@ -63,12 +50,6 @@ export default class PlanckContainer extends React.Component<Props> {
 
   componentDidMount() {
     this.update();
-    const { render, testbedProps } = this.props;
-    if (render === defaultRender) {
-      render(this.world, testbedProps);
-    } else if (render) {
-      render(this.world);
-    }
   }
 
   componentDidUpdate() {
@@ -85,6 +66,11 @@ export default class PlanckContainer extends React.Component<Props> {
   world: typeof World
 
   render() {
-    return <canvas id="stage" {...this.props.canvasProps} />;
+    const { view: View, viewProps } = this.props;
+    if (View === Testbed) {
+      const props = typeof viewProps === 'function' ? { getTestbedProps: viewProps } : viewProps;
+      return <View {...props} world={this.world} />;
+    }
+    return <View {...viewProps} world={this.world} />;
   }
 }

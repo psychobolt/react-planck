@@ -1,1 +1,2 @@
+import './Setup';
 import './Examples';

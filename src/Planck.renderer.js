@@ -3,7 +3,7 @@ import { Body, Shape } from 'planck-js';
 import invariant from 'fbjs/lib/invariant';
 
 import TYPES from './Planck.types';
-import { FixtureDef, JointDef } from './Types';
+import { FixtureDef, JointDef } from './types';
 import { diffProps, updateProps } from './Planck.component';
 
 export function getTypes(instanceFactory) {
