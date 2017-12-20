@@ -1,1 +1,1 @@
-export { default as Testbed, Props } from './Testbed';
+export { default as Testbed } from './Testbed';
