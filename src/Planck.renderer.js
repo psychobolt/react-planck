@@ -80,7 +80,7 @@ const defaultHostConfig = {
     },
     appendChild(parent, child) {
       if (parent instanceof Body && child instanceof FixtureDef) {
-        child.setInstance(parent.createFixture(child.shape, child.def));
+        child.setInstances([parent.createFixture(child.shape, child.def)]);
       } else {
         invariant(false, 'appendChild is NOOP. Make sure you implement it.');
       }
