@@ -43,8 +43,8 @@ export default {
   [CONSTANTS.Joint]: props => new JointDef(mapJointPropsToUserData(props)),
   [CONSTANTS.Edge]: ({ v1, v2 }) => new planck.Edge(v1, v2),
   [CONSTANTS.Box]: ({ hx, hy, center, angle }) => new planck.Box(hx, hy, center, angle),
-  [CONSTANTS.Circle]: ({ position = planck.Vec2.zero(), radius }) =>
-    new planck.Circle(position, radius),
+  [CONSTANTS.Circle]: ({ center = planck.Vec2.zero(), radius }) =>
+    new planck.Circle(center, radius),
   [CONSTANTS.Polygon]: ({ vertices }) => new planck.Polygon(vertices),
 };
 

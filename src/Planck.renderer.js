@@ -70,7 +70,7 @@ const defaultHostConfig = {
   now: Date.now,
   mutation: {
     commitUpdate(instance, updatePayload, type, oldProps, newProps, internalInstanceHandle) {
-      updateProps(instance, updatePayload);
+      updateProps(instance, updatePayload, type, oldProps, newProps);
     },
     commitMount(instance, type, newProps, internalInstanceHandle) {
     },

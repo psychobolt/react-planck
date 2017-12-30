@@ -45,6 +45,8 @@ export default class extends React.Component<Props, State> {
               width,
               height,
               pixelsPerMeter: this.props.ratio,
+              x: 0,
+              y: 0,
             }}
           >
             <Body>

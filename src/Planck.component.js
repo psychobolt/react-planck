@@ -1,5 +1,7 @@
-import _ from 'lodash';
+import isEqual from 'lodash/isEqual';
 import invariant from 'fbjs/lib/invariant';
+
+import TYPES, { CONSTANTS } from './Planck.types';
 
 function indexProps(dictionary, props) {
   Object.entries(props).forEach(([key, value]) => {
@@ -28,7 +30,7 @@ export function diffProps(oldProps, newProps) {
       }
     } else if (values.length === 2) {
       const [preValue, nextValue] = values;
-      if (!_.isEqual(preValue, nextValue)) {
+      if (!isEqual(preValue, nextValue)) {
         updatePayload.push(key, nextValue);
       }
     }
@@ -36,7 +38,14 @@ export function diffProps(oldProps, newProps) {
   return updatePayload.length ? updatePayload : null;
 }
 
-export function updateProps(instance, updatePayload) {
+export function updateProps(instance, updatePayload, type, oldProps, newProps) {
+  if (type === CONSTANTS.Box) {
+    Object.assign(instance, TYPES[CONSTANTS.BOX](newProps));
+    return;
+  } else if (type === CONSTANTS.Polygon) {
+    Object.assign(instance, TYPES[CONSTANTS.Polygon](newProps));
+    return;
+  }
   for (let i = 1; i < updatePayload.length; i += 2) {
     const key = updatePayload[i - 1];
     const value = updatePayload[i];
@@ -46,6 +55,14 @@ export function updateProps(instance, updatePayload) {
       instance.instances.forEach(joint => joint.setMotorSpeed(value));
     } else if (key === 'enableMotor') {
       instance.instances.forEach(joint => joint.enableMotor(value));
+    } else if (key === 'center' && type === CONSTANTS.Circle) {
+      instance.m_p.set(value);
+    } else if (key === 'v1') {
+      instance.m_vertex1.set(value);
+    } else if (key === 'v2') {
+      instance.m_vertex2.set(value);
+    } else if (key === 'radius') {
+      Object.assign(instance, { m_radius: value });
     } else {
       invariant(false, 'updateProps is NOOP. Make sure you implement it.');
     }
