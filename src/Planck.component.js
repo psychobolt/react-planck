@@ -40,7 +40,7 @@ export function diffProps(oldProps, newProps) {
 
 export function updateProps(instance, updatePayload, type, oldProps, newProps) {
   if (type === CONSTANTS.Box) {
-    Object.assign(instance, TYPES[CONSTANTS.BOX](newProps));
+    Object.assign(instance, TYPES[CONSTANTS.Box](newProps));
     return;
   } else if (type === CONSTANTS.Polygon) {
     Object.assign(instance, TYPES[CONSTANTS.Polygon](newProps));

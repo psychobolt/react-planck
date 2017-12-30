@@ -12,6 +12,8 @@ import Stage from 'stage-js/platform/web';
 // step: function, is always called
 // paint: function, is called only after repaint
 
+const { Vec2 } = planck;
+
 export default (opts, callback) => {
   if (typeof opts === 'function') {
     callback = opts;
@@ -26,7 +28,6 @@ export default (opts, callback) => {
     });
 
     stage.MAX_ELAPSE = 1000 / 30;
-    const { Vec2 } = planck;
 
     const testbed = {};
 
@@ -412,25 +413,35 @@ Viewer.prototype.renderWorld = function renderWorld() {
         } else {
           this._options.fillStyle = '';
         }
+      }
 
-        const type = f.getType();
-        const shape = f.getShape();
-        if (type === 'circle') {
-          f.ui = viewer.drawCircle(shape, this._options);
-        }
-        if (type === 'edge') {
-          f.ui = viewer.drawEdge(shape, this._options);
-        }
-        if (type === 'polygon') {
-          f.ui = viewer.drawPolygon(shape, this._options);
-        }
-        if (type === 'chain') {
-          f.ui = viewer.drawChain(shape, this._options);
-        }
+      const type = f.getType();
+      const shape = f.getShape();
+      let ui;
+      let changed = false;
+      if (type === 'circle' && (!f.ui || !f.ui.__isEqualShape(shape))) {
+        ui = viewer.drawCircle(shape, this._options);
+        changed = true;
+      }
+      if (type === 'edge' && (!f.ui || !f.ui.__isEqualShape(shape))) {
+        ui = viewer.drawEdge(shape, this._options);
+        changed = true;
+      }
+      if (type === 'polygon' && (!f.ui || !f.ui.__isEqualShape(shape))) {
+        ui = viewer.drawPolygon(shape, this._options);
+        changed = true;
+      }
+      if (type === 'chain' && (!f.ui || !f.ui.__isEqualShape(shape))) {
+        ui = viewer.drawChain(shape, this._options);
+        changed = true;
+      }
 
+      if (changed) {
         if (f.ui) {
-          f.ui.appendTo(viewer);
+          f.ui.remove();
         }
+        f.ui = ui;
+        f.ui.appendTo(viewer);
       }
 
       if (f.ui) {
@@ -522,9 +533,14 @@ Viewer.prototype.drawCircle = function drawCircle(shape, options) {
     ctx.strokeStyle = options.strokeStyle;
     ctx.stroke();
   });
+  const { x, y } = shape.m_p;
   const image = Stage.image(texture)
-    .offset(shape.m_p.x - cx, shape.m_p.y - cy);
+    .offset(x - cx, y - cy);
   const node = Stage.create().append(image);
+  node.__isEqualShape = function isEqual(other) {
+    return Vec2.areEqual(new Vec2(x, y), other.m_p)
+      && r === other.m_radius;
+  };
   return node;
 };
 
@@ -554,13 +570,21 @@ Viewer.prototype.drawEdge = function drawEdge(edge, options) {
     ctx.stroke();
   });
 
-  const minX = Math.min(v1.x, v2.x);
-  const minY = Math.min(v1.y, v2.y);
+  const v1x = v1.x;
+  const v1y = v1.y;
+  const v2x = v2.x;
+  const v2y = v2.y;
+  const minX = Math.min(v1x, v2x);
+  const minY = Math.min(v1y, v2y);
 
   const image = Stage.image(texture);
   image.rotate(Math.atan2(dy, dx));
   image.offset(minX - lw, minY - lw);
   const node = Stage.create().append(image);
+  node.__isEqualShape = function isEqual(other) {
+    return Vec2.areEqual(new Vec2(v1x, v1y), other.m_vertex1)
+      && Vec2.areEqual(new Vec2(v2x, v2y), other.m_vertex2);
+  };
   return node;
 };
 
@@ -621,6 +645,11 @@ Viewer.prototype.drawPolygon = function drawPolygon(shape, options) {
   const image = Stage.image(texture);
   image.offset(minX - lw, minY - lw);
   const node = Stage.create().append(image);
+  const lastVertices = vertices.map(vertex => new Vec2(vertex));
+  node.__isEqualShape = function isEqual(other) {
+    return lastVertices.length === other.m_vertices.length
+      && lastVertices.every((vertex, i) => Vec2.areEqual(vertex, other.m_vertices[i]));
+  };
   return node;
 };
 
@@ -682,5 +711,10 @@ Viewer.prototype.drawChain = function drawChain(shape, options) {
   const image = Stage.image(texture);
   image.offset(minX - lw, minY - lw);
   const node = Stage.create().append(image);
+  const lastVertices = vertices.map(vertex => new Vec2(vertex));
+  node.__isEqualShape = function isEqual(other) {
+    return lastVertices.length === other.m_vertices.length
+      && lastVertices.every((vertex, i) => Vec2.areEqual(vertex, other.m_vertices[i]));
+  };
   return node;
 };
