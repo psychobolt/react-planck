@@ -1,5 +1,6 @@
 import isEqual from 'lodash/isEqual';
 import invariant from 'fbjs/lib/invariant';
+import { Body } from 'planck-js';
 
 import TYPES, { CONSTANTS } from './Planck.types';
 
@@ -63,6 +64,21 @@ export function updateProps(instance, updatePayload, type, oldProps, newProps) {
       instance.m_vertex2.set(value);
     } else if (key === 'radius') {
       Object.assign(instance, { m_radius: value });
+    } else if (key === 'type' && type === CONSTANTS.Body) {
+      switch (value) {
+        case Body.STATIC:
+          instance.setStatic();
+          break;
+        case Body.DYNAMIC:
+          instance.setDynamic();
+          break;
+        default:
+          invariant(false, 'Body type unsupported.');
+      }
+    } else if (key === 'linearVelocity') {
+      instance.setLinearVelocity(value);
+    } else if (key === 'density') {
+      instance.setDensity(value);
     } else {
       invariant(false, 'updateProps is NOOP. Make sure you implement it.');
     }
