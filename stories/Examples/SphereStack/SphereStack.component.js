@@ -5,16 +5,15 @@ import { PlanckContainer, Body, Fixture, Edge, Circle } from 'src';
 
 export default () => {
   const bodies = [];
-  const shape = <Circle radius={1.0} />;
+  const Shape = props => <Circle radius={1.0} {...props} />;
   for (let i = 0; i < 10; i += 1) {
     bodies.push((
       <Body
         key={`dynamic_body_${i}`}
         type="dynamic"
-        position={new Vec2(0.0, 4.0 + (3.0 * i))}
         linearVelocity={new Vec2(0.0, -50.0)}
       >
-        <Fixture density={1.0}>{shape}</Fixture>
+        <Fixture density={1.0} render={{ stroke: 'red' }}><Shape center={new Vec2(0.0, 4.0 + (3.0 * i))} /></Fixture>
       </Body>
     ));
   }

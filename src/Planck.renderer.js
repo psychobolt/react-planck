@@ -37,7 +37,10 @@ const defaultHostConfig = {
     if (parent instanceof FixtureDef && child instanceof Shape) {
       parent.setShape(child);
     } else if (parent instanceof Body && child instanceof FixtureDef) {
-      child.setInstances([parent.createFixture(child.shape, child.def)]);
+      const { render, ...def } = child.def;
+      const fixture = parent.createFixture(child.shape, def);
+      fixture.render = render;
+      child.setInstances([fixture]);
     } else if (parent instanceof JointDef && child instanceof Body) {
       parent.addBody(child);
     } else {
@@ -80,7 +83,12 @@ const defaultHostConfig = {
     },
     appendChild(parent, child) {
       if (parent instanceof Body && child instanceof FixtureDef) {
-        child.setInstances([parent.createFixture(child.shape, child.def)]);
+        const { render, ...def } = child.def;
+        const fixture = parent.createFixture(child.shape, def);
+        fixture.render = render;
+        child.setInstances([fixture]);
+      } else if (parent instanceof FixtureDef && child instanceof Shape) {
+        parent.setShape(child);
       } else {
         invariant(false, 'appendChild is NOOP. Make sure you implement it.');
       }
@@ -103,6 +111,8 @@ const defaultHostConfig = {
     removeChild(parent, child) {
       if (parent instanceof Body && child instanceof FixtureDef) {
         child.instances.forEach(fixture => parent.destroyFixture(fixture));
+      } else if (parent instanceof FixtureDef && child instanceof Shape) {
+        parent.setShape(null);
       } else {
         invariant(false, 'removeChild is NOOP. Make sure you implement it.');
       }
