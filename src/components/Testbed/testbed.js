@@ -393,7 +393,8 @@ Viewer.prototype.renderWorld = function renderWorld() {
 
   for (let b = world.getBodyList(); b; b = b.getNext()) {
     for (let f = b.getFixtureList(); f; f = f.getNext()) {
-      if (!f.ui) {
+      let changed = false;
+      if (f.__lastRender !== f.render) {
         if (f.render && f.render.stroke) {
           this._options.strokeStyle = f.render.stroke;
         } else if (b.render && b.render.stroke) {
@@ -413,15 +414,14 @@ Viewer.prototype.renderWorld = function renderWorld() {
         } else {
           this._options.fillStyle = '';
         }
+
+        f.__lastRender = f.render;
+        changed = true;
       }
 
       const type = f.getType();
       const shape = f.getShape();
       let ui;
-      let changed = false;
-      if (f.__lastRender !== f.render) {
-        changed = true;
-      }
       if (type === 'circle' && (!f.ui || changed || !f.ui.__isEqualShape(shape))) {
         ui = viewer.drawCircle(shape, this._options);
         changed = true;
@@ -447,14 +447,10 @@ Viewer.prototype.renderWorld = function renderWorld() {
       if (f.ui) {
         const p = b.getPosition();
         const r = b.getAngle();
-        if (f.ui.__lastX !== p.x ||
-            f.ui.__lastY !== p.y ||
-            f.ui.__lastR !== r ||
-            f.__lastRender !== f.render) {
+        if (f.ui.__lastX !== p.x || f.ui.__lastY !== p.y || f.ui.__lastR !== r) {
           f.ui.__lastX = p.x;
           f.ui.__lastY = p.y;
           f.ui.__lastR = r;
-          f.__lastRender = f.render;
           f.ui.offset(p.x, p.y);
           f.ui.rotate(r);
         }
