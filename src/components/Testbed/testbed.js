@@ -419,23 +419,20 @@ Viewer.prototype.renderWorld = function renderWorld() {
       const shape = f.getShape();
       let ui;
       let changed = false;
-      if (type === 'circle' && (!f.ui || !f.ui.__isEqualShape(shape))) {
+      if (f.__lastRender !== f.render) {
+        changed = true;
+      }
+      if (type === 'circle' && (!f.ui || changed || !f.ui.__isEqualShape(shape))) {
         ui = viewer.drawCircle(shape, this._options);
         changed = true;
-      }
-      if (type === 'edge' && (!f.ui || !f.ui.__isEqualShape(shape))) {
+      } else if (type === 'edge' && (!f.ui || changed || !f.ui.__isEqualShape(shape))) {
         ui = viewer.drawEdge(shape, this._options);
         changed = true;
-      }
-      if (type === 'polygon' && (!f.ui || !f.ui.__isEqualShape(shape))) {
+      } else if (type === 'polygon' && (!f.ui || changed || !f.ui.__isEqualShape(shape))) {
         ui = viewer.drawPolygon(shape, this._options);
         changed = true;
-      }
-      if (type === 'chain' && (!f.ui || !f.ui.__isEqualShape(shape))) {
+      } else if (type === 'chain' && (!f.ui || changed || !f.ui.__isEqualShape(shape))) {
         ui = viewer.drawChain(shape, this._options);
-        changed = true;
-      }
-      if (f.__lastRender !== f.render) {
         changed = true;
       }
 
