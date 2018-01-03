@@ -435,6 +435,9 @@ Viewer.prototype.renderWorld = function renderWorld() {
         ui = viewer.drawChain(shape, this._options);
         changed = true;
       }
+      if (f.__lastRender !== f.render) {
+        changed = true;
+      }
 
       if (changed) {
         if (f.ui) {
@@ -447,10 +450,14 @@ Viewer.prototype.renderWorld = function renderWorld() {
       if (f.ui) {
         const p = b.getPosition();
         const r = b.getAngle();
-        if (f.ui.__lastX !== p.x || f.ui.__lastY !== p.y || f.ui.__lastR !== r) {
+        if (f.ui.__lastX !== p.x ||
+            f.ui.__lastY !== p.y ||
+            f.ui.__lastR !== r ||
+            f.__lastRender !== f.render) {
           f.ui.__lastX = p.x;
           f.ui.__lastY = p.y;
           f.ui.__lastR = r;
+          f.__lastRender = f.render;
           f.ui.offset(p.x, p.y);
           f.ui.rotate(r);
         }

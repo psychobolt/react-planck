@@ -79,6 +79,8 @@ export function updateProps(instance, updatePayload, type, oldProps, newProps) {
       instance.setLinearVelocity(value);
     } else if (key === 'density') {
       instance.setDensity(value);
+    } else if (key === 'render') {
+      Object.assign(instance, { render: value });
     } else {
       invariant(false, 'updateProps is NOOP. Make sure you implement it.');
     }
