@@ -393,28 +393,33 @@ Viewer.prototype.renderWorld = function renderWorld() {
 
   for (let b = world.getBodyList(); b; b = b.getNext()) {
     for (let f = b.getFixtureList(); f; f = f.getNext()) {
+      const options = {};
       let changed = false;
+      if (!f.render) {
+        f.render = {};
+      }
       if (f.__lastRender !== f.render) {
         if (f.render && f.render.stroke) {
-          this._options.strokeStyle = f.render.stroke;
+          options.strokeStyle = f.render.stroke;
         } else if (b.render && b.render.stroke) {
-          this._options.strokeStyle = b.render.stroke;
+          options.strokeStyle = b.render.stroke;
         } else if (b.isDynamic()) {
-          this._options.strokeStyle = 'rgba(255,255,255,0.9)';
+          options.strokeStyle = 'rgba(255,255,255,0.9)';
         } else if (b.isKinematic()) {
-          this._options.strokeStyle = 'rgba(255,255,255,0.7)';
+          options.strokeStyle = 'rgba(255,255,255,0.7)';
         } else if (b.isStatic()) {
-          this._options.strokeStyle = 'rgba(255,255,255,0.5)';
+          options.strokeStyle = 'rgba(255,255,255,0.5)';
         }
 
-        if (f.render && f.render.fill) {
-          this._options.fillStyle = f.render.fill;
+        if (f.render.fill) {
+          options.fillStyle = f.render.fill;
         } else if (b.render && b.render.fill) {
-          this._options.fillStyle = b.render.fill;
+          options.fillStyle = b.render.fill;
         } else {
-          this._options.fillStyle = '';
+          options.fillStyle = '';
         }
 
+        f.render = Object.assign({}, this._options, options);
         f.__lastRender = f.render;
         changed = true;
       }
@@ -423,16 +428,16 @@ Viewer.prototype.renderWorld = function renderWorld() {
       const shape = f.getShape();
       let ui;
       if (type === 'circle' && (!f.ui || changed || !f.ui.__isEqualShape(shape))) {
-        ui = viewer.drawCircle(shape, this._options);
+        ui = viewer.drawCircle(shape, f.render);
         changed = true;
       } else if (type === 'edge' && (!f.ui || changed || !f.ui.__isEqualShape(shape))) {
-        ui = viewer.drawEdge(shape, this._options);
+        ui = viewer.drawEdge(shape, f.render);
         changed = true;
       } else if (type === 'polygon' && (!f.ui || changed || !f.ui.__isEqualShape(shape))) {
-        ui = viewer.drawPolygon(shape, this._options);
+        ui = viewer.drawPolygon(shape, f.render);
         changed = true;
       } else if (type === 'chain' && (!f.ui || changed || !f.ui.__isEqualShape(shape))) {
-        ui = viewer.drawChain(shape, this._options);
+        ui = viewer.drawChain(shape, f.render);
         changed = true;
       }
 
