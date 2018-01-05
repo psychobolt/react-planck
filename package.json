@@ -86,7 +86,8 @@
     "lodash": "^4.17.4",
     "prop-types": "15.6.0",
     "react-reconciler": "0.7.0",
-    "stage-js": "^0.8.9"
+    "stage-js": "^0.8.9",
+    "styled-components": "^2.4.0"
   },
   "peerDependencies": {
     "planck-js": "^0.1.36",
