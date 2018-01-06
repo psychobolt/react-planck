@@ -1,14 +1,24 @@
+// @flow
 import React from 'react';
 import { Vec2 } from 'planck-js';
 
-import { PlanckContainer, Body, Joint, Fixture, Box } from 'src';
+import { type ViewProps, PlanckContainer, Body, Joint, Fixture, Box } from 'src';
 import Ground from '../Ground';
 import Teeter from '../Teeter';
 import Bridge from '../Bridge';
 import Car from '../Car.component';
 
-export default class Scene extends React.Component {
+type Props = {
+  viewProps: ViewProps
+}
+
+type State = {
+  started: boolean
+}
+
+export default class Scene extends React.Component<Props, State> {
   static defaultProps = {
+    viewProps: {},
     worldProps: {
       gravity: new Vec2(0, -10),
     },
@@ -22,7 +32,7 @@ export default class Scene extends React.Component {
     this.start();
   }
 
-  setCar = ref => { this.car = ref; }
+  setCar = (ref: typeof Body) => { this.car = ref; }
 
   start() {
     this.setState({
@@ -33,17 +43,16 @@ export default class Scene extends React.Component {
   car = null;
 
   render() {
-    const viewProps = this.state.started ? config => ({
-      keydown: this.car.onKeyDown(config),
-      step: this.car.onStep(config),
-    }) : {};
+    let { viewProps } = this.props;
+    if (this.state.started) {
+      viewProps = config => ({
+        ...(typeof viewProps === 'function' ? this.props.viewProps(config) : viewProps),
+        keydown: this.car.onKeyDown(config),
+        step: this.car.onStep(config),
+      });
+    }
     return (
-      <PlanckContainer
-        viewProps={viewProps}
-        worldProps={{
-          gravity: new Vec2(0, -10),
-        }}
-      >
+      <PlanckContainer {...this.props} viewProps={viewProps}>
         <Ground />
         <Teeter />
         <Bridge />

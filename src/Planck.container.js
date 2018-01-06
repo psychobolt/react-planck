@@ -7,12 +7,14 @@ import PlanckRenderer from './Planck.renderer';
 import { CONSTANTS } from './Planck.types';
 import Testbed, { type Props as TestbedProps, type PropsWithStage } from './components/Testbed';
 
+export type ViewProps = TestbedProps | PropsWithStage;
+
 type Props = {
   worldProps: {},
   view: ComponentType<any>,
-  viewProps: TestbedProps | PropsWithStage,
+  viewProps: ViewProps,
   renderer: typeof PlanckRenderer,
-  children: Node
+  children: Node,
 };
 
 export default class PlanckContainer extends React.Component<Props> {

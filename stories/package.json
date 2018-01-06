@@ -2,6 +2,8 @@
     "name": "stories",
     "version": "0.1.0",
     "dependencies": {
-        "re-resizable": "^4.1.2"
+        "re-resizable": "^4.1.2",
+        "semantic-ui-css": "^2.2.12",
+        "semantic-ui-react": "^0.77.1"
     }
 }

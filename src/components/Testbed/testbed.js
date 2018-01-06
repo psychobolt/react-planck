@@ -41,7 +41,7 @@ export default (opts, callback) => {
       if (testbed._pause) testbed._pause();
     });
     testbed.isPaused = () => paused;
-    testbed.togglePause = () => (paused ? testbed.play() : testbed.pause());
+    testbed.togglePause = () => (paused ? testbed.resume() : testbed.pause());
     testbed.pause = () => stage.pause();
     testbed.resume = () => {
       stage.resume();
@@ -309,7 +309,7 @@ export default (opts, callback) => {
         }
       });
 
-    window.addEventListener('keydown', e => {
+    const onPauseKey = e => {
       switch (e.keyCode) {
         case 'P'.charCodeAt(0):
           testbed.togglePause();
@@ -317,21 +317,29 @@ export default (opts, callback) => {
         default:
           break;
       }
-    }, false);
+    };
+    window.addEventListener('keydown', onPauseKey, false);
 
     const downKeys = {};
-    window.addEventListener('keydown', e => {
+    const onKeydown = e => {
       const { keyCode } = e;
       downKeys[keyCode] = true;
       updateActiveKeys(keyCode, true);
       if (testbed.keydown) testbed.keydown(keyCode, String.fromCharCode(keyCode));
-    });
-    window.addEventListener('keyup', e => {
+    };
+    window.addEventListener('keydown', onKeydown);
+    const onKeyup = e => {
       const { keyCode } = e;
       downKeys[keyCode] = false;
       updateActiveKeys(keyCode, false);
       if (testbed.keyup) testbed.keyup(keyCode, String.fromCharCode(keyCode));
-    });
+    };
+    window.addEventListener('keyup', onKeyup);
+    testbed.unbindEvents = function unbindEvents() {
+      window.removeEventListener('keydown', onPauseKey);
+      window.removeEventListener('keydown', onKeydown);
+      window.removeEventListener('keyup', onKeyup);
+    };
 
     const { activeKeys } = testbed;
     function updateActiveKeys(keyCode, down) {

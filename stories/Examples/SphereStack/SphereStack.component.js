@@ -3,9 +3,9 @@ import { Vec2 } from 'planck-js';
 
 import { PlanckContainer, Body, Fixture, Edge, Circle } from 'src';
 
-export default () => {
+export default props => {
   const bodies = [];
-  const Shape = props => <Circle radius={1.0} {...props} />;
+  const Shape = circleProps => <Circle radius={1.0} {...circleProps} />;
   for (let i = 0; i < 10; i += 1) {
     bodies.push((
       <Body
@@ -18,10 +18,10 @@ export default () => {
     ));
   }
   return (
-    <PlanckContainer worldProps={new Vec2(0, -10)}>
+    <PlanckContainer {...props} worldProps={new Vec2(0, -10)}>
       <Body>
         <Fixture density={0.0}>
-          <Edge v1={new Vec2(-40.0, 0.0)} v2={new Vec2(40.0, 0.0)} fixDef={0.0} />
+          <Edge v1={new Vec2(-40.0, 0.0)} v2={new Vec2(40.0, 0.0)} />
         </Fixture>
       </Body>
       {bodies}

@@ -19,7 +19,9 @@ type Config = {
   width: number,
   height: number,
   ratio: number,
-  stage: Stage
+  stage: Stage,
+  paused: () => void,
+  isPaused: () => boolean,
 }
 
 export default class Testbed extends React.Component<Props> {
@@ -32,6 +34,11 @@ export default class Testbed extends React.Component<Props> {
   componentDidMount() {
     testbed(config => {
       this.config = config;
+      const { width, height, getTestbedProps, world, ...rest } = this.props;
+      Object.assign(
+        this.config,
+        Object.assign({}, rest, getTestbedProps ? getTestbedProps(this.config) : {}),
+      );
       if (this.canvas) {
         this.resize(this.canvas);
       }
@@ -39,15 +46,21 @@ export default class Testbed extends React.Component<Props> {
     });
   }
 
-  componentDidUpdate() {
+  componentDidUpdate(prevProps: Props) {
     if (this.canvas && this.config) {
-      this.resize(this.canvas);
+      const { width, height, getTestbedProps, world, ...rest } = this.props;
+      const props = Object.assign({}, rest, getTestbedProps ? getTestbedProps(this.config) : {});
+      if (Object.entries(props).some(([key, value]) => this.config[key] !== value)) {
+        Object.assign(this.config, props);
+      }
+      if (width !== prevProps.width || height !== prevProps.height) this.resize(this.canvas);
     }
   }
 
   componentWillUnmount() {
     const { config } = this;
     if (config) {
+      this.config.unbindEvents();
       Object.keys(config).forEach(key => { config[key] = null; });
       this.config = null;
     }
@@ -56,21 +69,22 @@ export default class Testbed extends React.Component<Props> {
   setCanvas = (ref: ?HTMLCanvasElement) => { this.canvas = ref; }
 
   resize(canvas: HTMLCanvasElement) {
-    const { width, height, pixelsPerMeter, getTestbedProps, world, ...rest } = this.props;
-    const props = getTestbedProps ? getTestbedProps(this.config) : {};
-    const { stage } = this.config;
+    const { pixelsPerMeter } = this.props;
+    const { stage, pause, isPaused } = this.config;
     const { clientWidth: w, clientHeight: h } = canvas;
     const context = canvas.getContext('2d');
+    const paused = isPaused();
     Object.assign(canvas, { width: w, height: h });
     stage.viewport(w, h, 1);
+    if (paused) pause();
     context.setTransform(1, 0, 0, 1, 0, 0);
     context.clearRect(0, 0, w, h);
     stage.render(context);
-    Object.assign(this.config, rest, {
+    Object.assign(this.config, {
       width: w / pixelsPerMeter,
       height: h / pixelsPerMeter,
       ratio: pixelsPerMeter,
-    }, props);
+    });
   }
 
   canvas: ?HTMLCanvasElement
