@@ -116,7 +116,7 @@ const defaultHostConfig = {
           // Workaround for updating fixture list. See issue https://github.com/shakiba/planck.js/issues/41
           let current = parent.getFixtureList();
           if (current === fixture) {
-            Object.assign(parent, { m_fixtureList: null });
+            Object.assign(parent, { m_fixtureList: next });
           } else {
             while (current != null) {
               if (current === fixture) break;
