@@ -2,7 +2,7 @@ import isEqual from 'lodash/isEqual';
 import invariant from 'fbjs/lib/invariant';
 import { Body } from 'planck-js';
 
-import TYPES, { CONSTANTS } from './Planck.types';
+import TYPES, { CONSTANTS, mapBodyPropsToUserData } from './Planck.types';
 
 function indexProps(dictionary, props) {
   Object.entries(props).forEach(([key, value]) => {
@@ -39,6 +39,13 @@ export function diffProps(oldProps, newProps) {
   return updatePayload.length ? updatePayload : null;
 }
 
+function updateJoint(instance, props) {
+  instance.update(mapBodyPropsToUserData(props));
+  const { parent, instances } = instance;
+  instances.map(joint => parent.destroyJoint(joint));
+  instance.setInstances(instance.getJoints(parent).map(joint => parent.createJoint(joint)));
+}
+
 export function updateProps(instance, updatePayload, type, oldProps, newProps) {
   if (type === CONSTANTS.Box) {
     Object.assign(instance, TYPES[CONSTANTS.Box](newProps));
@@ -46,6 +53,14 @@ export function updateProps(instance, updatePayload, type, oldProps, newProps) {
   } else if (type === CONSTANTS.Polygon) {
     Object.assign(instance, TYPES[CONSTANTS.Polygon](newProps));
     return;
+  } else if (type === CONSTANTS.Joint) {
+    if (updatePayload.includes('type') ||
+        updatePayload.includes('axis') ||
+        updatePayload.includes('bodyA') ||
+        updatePayload.includes('bodyB')) {
+      updateJoint(instance, newProps);
+      return;
+    }
   }
   for (let i = 1; i < updatePayload.length; i += 2) {
     const key = updatePayload[i - 1];
@@ -56,6 +71,8 @@ export function updateProps(instance, updatePayload, type, oldProps, newProps) {
       instance.instances.forEach(joint => joint.setMotorSpeed(value));
     } else if (key === 'enableMotor') {
       instance.instances.forEach(joint => joint.enableMotor(value));
+    } else if (key === 'dampingRatio') {
+      instance.instances.forEach(joint => joint.setSpringDampingRatio(value));
     } else if (key === 'center' && type === CONSTANTS.Circle) {
       instance.m_p.set(value);
     } else if (key === 'v1') {

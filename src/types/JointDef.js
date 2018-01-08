@@ -18,11 +18,19 @@ export default class JointDef {
   bodies = [];
 
   constructor(def) {
+    this.update(def);
+  }
+
+  update(def) {
     const { type, anchors, axis, ...rest } = def;
     this.def = rest;
     this.anchors = anchors || [];
     this.type = type;
     this.axis = axis;
+  }
+
+  setParent(parent) {
+    this.parent = parent;
   }
 
   addBody(body) {
@@ -79,13 +87,13 @@ export default class JointDef {
     let joint;
 
     switch (type) {
-      case JointTypes.Revolute:
+      case JointTypes.REVOLUTE:
         joint = new RevoluteJoint(def, bodyA, bodyB, anchors[0] || bodyB.getPosition());
         break;
-      case JointTypes.Joint:
+      case JointTypes.WHEEL:
         joint = new WheelJoint(def, bodyA, bodyB, anchors[0] || bodyB.getPosition(), this.axis);
         break;
-      case JointTypes.Chain:
+      case JointTypes.CHAIN:
       default: {
         const anchorA = bodyA && anchors.length < 1 ? bodyA.getPosition() : anchors[0];
         const anchorB = bodyB && anchors.length < 2 ? bodyB.getPosition() : anchors[1];

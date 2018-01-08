@@ -22,7 +22,7 @@ function mapIdToUserData(props) {
   return props;
 }
 
-function mapBodyPropsToUserData(props) {
+export function mapBodyPropsToUserData(props) {
   const { bodyA, bodyB, ...rest } = props;
   let { userData } = props;
   if (bodyA) {
