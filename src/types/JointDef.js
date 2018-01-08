@@ -1,9 +1,9 @@
 import { DistanceJoint, WheelJoint, RevoluteJoint } from 'planck-js';
 
-export const TYPES = {
-  Revolute: 'revolute',
-  Wheel: 'wheel',
-  Chain: 'chain',
+export const JointTypes = {
+  REVOLUTE: 'revolute',
+  WHEEL: 'wheel',
+  CHAIN: 'chain',
 };
 
 const findBody = (body, id) => {
@@ -79,13 +79,13 @@ export default class JointDef {
     let joint;
 
     switch (type) {
-      case TYPES.Revolute:
+      case JointTypes.Revolute:
         joint = new RevoluteJoint(def, bodyA, bodyB, anchors[0] || bodyB.getPosition());
         break;
-      case TYPES.Joint:
+      case JointTypes.Joint:
         joint = new WheelJoint(def, bodyA, bodyB, anchors[0] || bodyB.getPosition(), this.axis);
         break;
-      case TYPES.Chain:
+      case JointTypes.Chain:
       default: {
         const anchorA = bodyA && anchors.length < 1 ? bodyA.getPosition() : anchors[0];
         const anchorB = bodyB && anchors.length < 2 ? bodyB.getPosition() : anchors[1];
