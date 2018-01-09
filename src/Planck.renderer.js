@@ -24,7 +24,9 @@ const defaultHostConfig = {
     return parentHostContext;
   },
   getPublicInstance(instance) {
-    if (instance instanceof JointDef || instance instanceof FixtureDef) {
+    if (instance instanceof BodyDef || instance instanceof FixtureDef) {
+      return instance.instance;
+    } else if (instance instanceof JointDef) {
       return instance.instances.length > 1 ? instance.instances : instance.instances[0];
     }
     return instance;

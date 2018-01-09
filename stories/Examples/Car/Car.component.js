@@ -68,7 +68,7 @@ export default class Car extends React.Component<Props, State> {
   }
 
   onStep = (stage: Stage) => () => {
-    const carPosition = this.car.instance.getPosition();
+    const carPosition = this.car.getPosition();
     const { left, right } = stage.activeKeys;
     if (left && right) {
       this.onLeftRightKey();
