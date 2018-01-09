@@ -97,7 +97,7 @@ export function updateProps(instance, updatePayload, type, oldProps, newProps) {
     } else if (key === 'density') {
       instance.setDensity(value);
     } else if (key === 'render') {
-      instance.instances.forEach(fixture => Object.assign(fixture, { render: value }));
+      Object.assign(instance.instance, { render: value });
     } else {
       invariant(false, 'updateProps is NOOP. Make sure you implement it.');
     }

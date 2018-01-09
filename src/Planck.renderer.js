@@ -117,21 +117,21 @@ const defaultHostConfig = {
     },
     removeChild(parent, child) {
       if (parent instanceof BodyDef && child instanceof FixtureDef) {
-        child.instances.forEach(fixture => {
-          const next = fixture.getNext();
-          parent.destroyFixture(fixture);
-          // Workaround for updating fixture list. See issue https://github.com/shakiba/planck.js/issues/41
-          let current = parent.getFixtureList();
-          if (current === fixture) {
-            Object.assign(parent.instance, { m_fixtureList: next });
-          } else {
-            while (current != null) {
-              if (current === fixture) break;
-              current = current.getNext();
-            }
-            current.m_next = next;
+        const fixture = child.instance;
+        const next = fixture.getNext();
+        parent.destroyFixture(fixture);
+        // Workaround for updating fixture list. See issue https://github.com/shakiba/planck.js/issues/41
+        let current = parent.getFixtureList();
+        if (current === fixture) {
+          Object.assign(parent.instance, { m_fixtureList: next });
+        } else {
+          while (current != null) {
+            if (current === fixture) break;
+            current = current.getNext();
           }
-        });
+          current.m_next = next;
+        }
+        child.setInstance(null);
       } else if (parent instanceof FixtureDef && child instanceof Shape) {
         parent.setShape(null);
       } else {
@@ -141,8 +141,10 @@ const defaultHostConfig = {
     removeChildFromContainer(world, child) {
       if (child instanceof BodyDef) {
         world.destroyBody(child.instance);
+        child.setInstance(null);
       } else if (child instanceof JointDef) {
         child.instances.forEach(joint => world.destroyJoint(joint));
+        child.setInstances(null);
       } else {
         invariant(false, 'removeChildFromContainer is NOOP. Make sure you implement it.');
       }
