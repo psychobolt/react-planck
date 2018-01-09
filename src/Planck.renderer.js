@@ -119,7 +119,7 @@ const defaultHostConfig = {
       if (parent instanceof BodyDef && child instanceof FixtureDef) {
         const fixture = child.instance;
         const next = fixture.getNext();
-        parent.destroyFixture(fixture);
+        parent.instance.destroyFixture(fixture);
         // Workaround for updating fixture list. See issue https://github.com/shakiba/planck.js/issues/41
         let current = parent.getFixtureList();
         if (current === fixture) {
