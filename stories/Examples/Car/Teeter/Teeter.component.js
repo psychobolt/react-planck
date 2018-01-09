@@ -8,7 +8,7 @@ type Props = {};
 
 export default class extends React.Component<Props> {
   componentDidMount() {
-    this.teeter.applyAngularImpulse(100.0, true);
+    this.teeter.instance.applyAngularImpulse(100.0, true);
   }
 
   setTeeter = (ref: PlBody) => { this.teeter = ref; }

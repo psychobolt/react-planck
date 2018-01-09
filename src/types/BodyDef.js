@@ -1,10 +1,6 @@
-export default class FixtureDef {
+export default class BodyDef {
   constructor(def) {
     this.def = def;
-  }
-
-  setShape(shape) {
-    this.shape = shape;
   }
 
   setInstance(instance) {

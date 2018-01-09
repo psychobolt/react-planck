@@ -1,7 +1,7 @@
 import planck from 'planck-js';
 import _ from 'lodash';
 
-import { FixtureDef, JointDef } from './types';
+import { BodyDef, FixtureDef, JointDef } from './types';
 
 export const CONSTANTS = {
   World: 'World',
@@ -38,7 +38,11 @@ const mapJointPropsToUserData = _.flowRight([mapIdToUserData, mapBodyPropsToUser
 
 export default {
   [CONSTANTS.World]: props => new planck.World(props),
-  [CONSTANTS.Body]: (props, world) => world.createBody(mapIdToUserData(props)),
+  [CONSTANTS.Body]: (props, world) => {
+    const instance = new BodyDef(mapIdToUserData(props));
+    instance.setInstance(world.createBody(instance.def));
+    return instance;
+  },
   [CONSTANTS.Fixture]: props => new FixtureDef(mapIdToUserData(props)),
   [CONSTANTS.Joint]: props => new JointDef(mapJointPropsToUserData(props)),
   [CONSTANTS.Edge]: ({ v1, v2 }) => new planck.Edge(v1, v2),

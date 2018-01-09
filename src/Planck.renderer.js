@@ -1,9 +1,9 @@
 import Reconciler from 'react-reconciler';
-import { Body, Shape } from 'planck-js';
+import { Shape, Joint } from 'planck-js';
 import invariant from 'fbjs/lib/invariant';
 
 import TYPES from './Planck.types';
-import { FixtureDef, JointDef } from './types';
+import { BodyDef, FixtureDef, JointDef } from './types';
 import { diffProps, updateProps } from './Planck.component';
 
 export function getTypes(instanceFactory) {
@@ -36,13 +36,13 @@ const defaultHostConfig = {
     }
     if (parent instanceof FixtureDef && child instanceof Shape) {
       parent.setShape(child);
-    } else if (parent instanceof Body && child instanceof FixtureDef) {
+    } else if (parent instanceof BodyDef && child instanceof FixtureDef) {
       const { render, ...def } = child.def;
-      const fixture = parent.createFixture(child.shape, def);
+      const fixture = parent.instance.createFixture(child.shape, def);
       fixture.render = render;
-      child.setInstances([fixture]);
-    } else if (parent instanceof JointDef && child instanceof Body) {
-      parent.addBody(child);
+      child.setInstance(fixture);
+    } else if (parent instanceof JointDef && child instanceof BodyDef) {
+      parent.addBody(child.instance);
     } else {
       invariant(false, 'appendInitialChild is NOOP. Make sure you implement it.');
     }
@@ -82,11 +82,11 @@ const defaultHostConfig = {
     resetTextContent(insntace) {
     },
     appendChild(parent, child) {
-      if (parent instanceof Body && child instanceof FixtureDef) {
+      if (parent instanceof BodyDef && child instanceof FixtureDef) {
         const { render, ...def } = child.def;
-        const fixture = parent.createFixture(child.shape, def);
+        const fixture = parent.instance.createFixture(child.shape, def);
         fixture.render = render;
-        child.setInstances([fixture]);
+        child.setInstance(fixture);
       } else if (parent instanceof FixtureDef && child instanceof Shape) {
         parent.setShape(child);
       } else {
@@ -94,8 +94,8 @@ const defaultHostConfig = {
       }
     },
     appendChildToContainer(world, child) {
-      if (child instanceof Body) {
-        // do nothing
+      if (child instanceof BodyDef) {
+        if (child.instance.m_destroyed) child.setInstance(world.createBody(child.def));
       } else if (child instanceof JointDef) {
         child.setParent(world);
         child.setInstances(child.getJoints(world).map(joint => world.createJoint(joint)));
@@ -107,17 +107,21 @@ const defaultHostConfig = {
       invariant(false, 'insertBefore is NOOP. Make sure you implement it.');
     },
     insertInContainerBefore(container, child, beforeChild) {
-      invariant(false, 'insertInContainerBefore is NOOP. Make sure you implement it.');
+      if (child instanceof BodyDef && beforeChild instanceof Joint) {
+        if (child.instance.m_destroyed) child.setInstance(container.createBody(child.def));
+      } else {
+        invariant(false, 'insertInContainerBefore is NOOP. Make sure you implement it.');
+      }
     },
     removeChild(parent, child) {
-      if (parent instanceof Body && child instanceof FixtureDef) {
+      if (parent instanceof BodyDef && child instanceof FixtureDef) {
         child.instances.forEach(fixture => {
           const next = fixture.getNext();
           parent.destroyFixture(fixture);
           // Workaround for updating fixture list. See issue https://github.com/shakiba/planck.js/issues/41
           let current = parent.getFixtureList();
           if (current === fixture) {
-            Object.assign(parent, { m_fixtureList: next });
+            Object.assign(parent.instance, { m_fixtureList: next });
           } else {
             while (current != null) {
               if (current === fixture) break;
@@ -133,8 +137,8 @@ const defaultHostConfig = {
       }
     },
     removeChildFromContainer(world, child) {
-      if (child instanceof Body) {
-        world.destroyBody(child);
+      if (child instanceof BodyDef) {
+        world.destroyBody(child.instance);
       } else if (child instanceof JointDef) {
         child.instances.forEach(joint => world.destroyJoint(joint));
       } else {
