@@ -84,18 +84,20 @@ export function updateProps(instance, updatePayload, type, oldProps, newProps) {
     } else if (key === 'type' && type === CONSTANTS.Body) {
       switch (value) {
         case Body.STATIC:
-          instance.setStatic();
+          instance.instance.setStatic();
           break;
         case Body.DYNAMIC:
-          instance.setDynamic();
+          instance.instance.setDynamic();
           break;
         default:
           invariant(false, 'Body type unsupported.');
       }
     } else if (key === 'linearVelocity') {
-      instance.setLinearVelocity(value);
+      instance.instance.setLinearVelocity(value);
     } else if (key === 'density') {
-      instance.setDensity(value);
+      instance.instance.setDensity(value);
+    } else if (key === 'friction') {
+      instance.instance.setFriction(value);
     } else if (key === 'render') {
       Object.assign(instance.instance, { render: value });
     } else {
