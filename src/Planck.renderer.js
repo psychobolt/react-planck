@@ -1,5 +1,5 @@
 import Reconciler from 'react-reconciler';
-import { Shape, Joint } from 'planck-js';
+import { Shape } from 'planck-js';
 import invariant from 'fbjs/lib/invariant';
 
 import TYPES from './Planck.types';
@@ -107,7 +107,7 @@ const defaultHostConfig = {
       invariant(false, 'insertBefore is NOOP. Make sure you implement it.');
     },
     insertInContainerBefore(container, child, beforeChild) {
-      if (child instanceof BodyDef && beforeChild instanceof Joint) {
+      if (child instanceof BodyDef && beforeChild instanceof JointDef) {
         if (child.instance.m_destroyed) child.setInstance(container.createBody(child.def));
       } else {
         invariant(false, 'insertInContainerBefore is NOOP. Make sure you implement it.');
