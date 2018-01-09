@@ -69,6 +69,8 @@ export function updateProps(instance, updatePayload, type, oldProps, newProps) {
       instance.instances.forEach(joint => joint.setSpringFrequencyHz(value));
     } else if (key === 'motorSpeed') {
       instance.instances.forEach(joint => joint.setMotorSpeed(value));
+    } else if (key === 'maxMotorTorque') {
+      instance.instances.forEach(joint => joint.setMaxMotorTorque(value));
     } else if (key === 'enableMotor') {
       instance.instances.forEach(joint => joint.enableMotor(value));
     } else if (key === 'dampingRatio') {
