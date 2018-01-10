@@ -20,6 +20,7 @@ type Config = {
   height: number,
   ratio: number,
   stage: Stage,
+  destroy: () => void,
   paused: () => void,
   isPaused: () => boolean,
 }
@@ -58,10 +59,8 @@ export default class Testbed extends React.Component<Props> {
   }
 
   componentWillUnmount() {
-    const { config } = this;
-    if (config) {
-      this.config.unbindEvents();
-      Object.keys(config).forEach(key => { config[key] = null; });
+    if (this.config) {
+      this.config.destroy();
       this.config = null;
     }
   }

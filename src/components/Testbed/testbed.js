@@ -335,10 +335,13 @@ export default (opts, callback) => {
       if (testbed.keyup) testbed.keyup(keyCode, String.fromCharCode(keyCode));
     };
     window.addEventListener('keyup', onKeyup);
-    testbed.unbindEvents = function unbindEvents() {
+    testbed.destroy = () => {
+      viewer.destroyed = true;
+      viewer._world = null;
       window.removeEventListener('keydown', onPauseKey);
       window.removeEventListener('keydown', onKeydown);
       window.removeEventListener('keyup', onKeyup);
+      Object.keys(testbed).forEach(key => { testbed[key] = null; });
     };
 
     const { activeKeys } = testbed;
@@ -386,8 +389,10 @@ function Viewer(world, opts) {
       world.step(timeStep);
       elapsedTime -= timeStep;
     }
-    this.renderWorld();
-    return true;
+    if (!this.destroyed) {
+      this.renderWorld();
+      return true;
+    }
   }, true);
 
   world.on('remove-fixture', obj => obj.ui && obj.ui.remove());
