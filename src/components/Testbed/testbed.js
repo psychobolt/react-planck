@@ -213,6 +213,10 @@ export default (opts, callback) => {
     });
 
     viewer.tick((dt, t) => {
+      if (viewer.destroyed) {
+        return false;
+      }
+
       // call testbed step, if provided
       if (typeof testbed.step === 'function') {
         testbed.step(dt, t);
@@ -383,17 +387,17 @@ function Viewer(world, opts) {
   const timeStep = 1 / this._options.hz;
   let elapsedTime = 0;
   this.tick(dt => {
-    if (!this.destroyed) {
-      dt = dt * 0.001 * options.speed;
-      elapsedTime += dt;
-      while (elapsedTime > timeStep) {
-        world.step(timeStep);
-        elapsedTime -= timeStep;
-      }
-      this.renderWorld();
-      return true;
+    if (this.destroyed) {
+      return false;
     }
-    return false;
+    dt = dt * 0.001 * options.speed;
+    elapsedTime += dt;
+    while (elapsedTime > timeStep) {
+      world.step(timeStep);
+      elapsedTime -= timeStep;
+    }
+    this.renderWorld();
+    return true;
   }, true);
 
   world.on('remove-fixture', obj => obj.ui && obj.ui.remove());
