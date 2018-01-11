@@ -100,7 +100,7 @@ const defaultHostConfig = {
         if (child.instance.m_destroyed) child.setInstance(world.createBody(child.def));
       } else if (child instanceof JointDef) {
         child.setParent(world);
-        child.setInstances(child.getJoints(world).map(joint => world.createJoint(joint)));
+        child.setInstances(child.getJoints().map(joint => world.createJoint(joint)));
       } else {
         invariant(false, 'appendChildToContainer is NOOP. Make sure you implement it.');
       }

@@ -1,8 +1,8 @@
 import isEqual from 'lodash/isEqual';
 import invariant from 'fbjs/lib/invariant';
-import { Body } from 'planck-js';
+import { Body, Vec2 } from 'planck-js';
 
-import TYPES, { CONSTANTS, mapBodyPropsToUserData } from './Planck.types';
+import TYPES, { CONSTANTS, mapIdToUserData, mapBodyPropsToUserData } from './Planck.types';
 
 function indexProps(dictionary, props) {
   Object.entries(props).forEach(([key, value]) => {
@@ -53,11 +53,13 @@ export function updateProps(instance, updatePayload, type, oldProps, newProps) {
   } else if (type === CONSTANTS.Polygon) {
     Object.assign(instance, TYPES[CONSTANTS.Polygon](newProps));
     return;
+  } else if (type === CONSTANTS.Body) {
+    instance.update(mapIdToUserData(newProps));
+  } else if (type === CONSTANTS.Fixture) {
+    instance.update(mapIdToUserData(newProps));
   } else if (type === CONSTANTS.Joint) {
-    if (updatePayload.includes('type') ||
-        updatePayload.includes('axis') ||
-        updatePayload.includes('bodyA') ||
-        updatePayload.includes('bodyB')) {
+    instance.update(mapBodyPropsToUserData(newProps));
+    if (updatePayload.includes('type')) {
       updateJoint(instance, newProps);
       return;
     }
@@ -104,6 +106,25 @@ export function updateProps(instance, updatePayload, type, oldProps, newProps) {
       Object.assign(instance.instance, { render: value });
     } else if (key === 'gravity') {
       instance.setGravity(value);
+    } else if (key === 'axis') {
+      instance.instances.forEach(joint => {
+        joint.getLocalAxisA().set(joint.getBodyA().getLocalVector(value));
+        joint.m_localYAxisA.set(Vec2.cross(1.0, joint.getLocalAxisA()));
+      });
+    } else if (key === 'bodyA') {
+      const body = instance.getBody('$$bodyA');
+      instance.instances.forEach(joint => {
+        Object.assign(joint, { m_bodyA: body });
+        joint.getLocalAnchorA().set(body.getLocalPoint(instance.anchors[0] || joint.getBodyB()));
+        joint.getLocalAxisA().set(body.getLocalVector(body.axis));
+        joint.m_localYAxisA.set(Vec2.cross(1.0, joint.getLocalXAxis()));
+      });
+    } else if (key === 'bodyB') {
+      const body = instance.getBody('$$bodyB');
+      instance.instances.forEach(joint => {
+        Object.assign(joint, { m_bodyB: body });
+        joint.getLocalAnchorB().set(body.getLocalPoint(instance.anchors[0] || body.getPosition()));
+      });
     } else {
       invariant(false, 'updateProps is NOOP. Make sure you implement it.');
     }

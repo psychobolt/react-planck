@@ -14,7 +14,7 @@ export const CONSTANTS = {
   Polygon: 'Polygon',
 };
 
-function mapIdToUserData(props) {
+export function mapIdToUserData(props) {
   const { id, userData, ...rest } = props;
   if (id) {
     return { ...rest, userData: { ...userData, $$id: id } };

@@ -37,28 +37,33 @@ export default class JointDef {
     this.bodies.push(body);
   }
 
+  getBody(key) {
+    const { userData } = this.def;
+    let body;
+    if (userData) {
+      body = userData[key];
+      if (typeof body === 'string') {
+        body = findBody(this.parent.getBodyList(), body);
+      }
+    }
+    return body;
+  }
+
   addAnchor(anchor) {
     this.anchors.push(anchor);
   }
 
-  getJoints(world) {
+  getJoints() {
     const { type, def, anchors } = this;
-    const { userData } = def;
     const newBodies = [];
 
-    if (userData) {
-      const { $$bodyA, $$bodyB } = userData;
-      [$$bodyA, $$bodyB].forEach(body => {
-        let newBody = body;
-        if (typeof newBody === 'string') {
-          newBody = findBody(world.getBodyList(), newBody);
-          if (newBody) {
-            newBodies.push(newBody);
-          }
-        } else {
-          newBodies.push(body);
-        }
-      });
+    let body = this.getBody('$$bodyA');
+    if (body) {
+      newBodies.push(body);
+    }
+    body = this.getBody('$$bodyB');
+    if (body) {
+      newBodies.push(body);
     }
 
     if (newBodies.length) {
