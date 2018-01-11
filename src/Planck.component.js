@@ -102,6 +102,8 @@ export function updateProps(instance, updatePayload, type, oldProps, newProps) {
       instance.instance.setFriction(value);
     } else if (key === 'render') {
       Object.assign(instance.instance, { render: value });
+    } else if (key === 'gravity') {
+      instance.setGravity(value);
     } else {
       invariant(false, 'updateProps is NOOP. Make sure you implement it.');
     }

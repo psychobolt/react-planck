@@ -3,6 +3,7 @@ import React, { type Node, type ComponentType } from 'react';
 import { World } from 'planck-js';
 import PropTypes from 'prop-types';
 
+import { diffProps, updateProps } from './Planck.component';
 import PlanckRenderer from './Planck.renderer';
 import { CONSTANTS } from './Planck.types';
 import Testbed, { type Props as TestbedProps, type PropsWithStage } from './components/Testbed';
@@ -50,7 +51,11 @@ export default class PlanckContainer extends React.Component<Props> {
     return { world: this.world };
   }
 
-  componentDidMount() {
+  componentDidMount({ worldProps }: Props) {
+    const updatePayload = diffProps(worldProps, this.props.worldProps);
+    if (updatePayload.length) {
+      updateProps(this.world, updatePayload, CONSTANTS.World, worldProps, this.props.worldProps);
+    }
     this.update();
   }
 

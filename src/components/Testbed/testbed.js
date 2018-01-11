@@ -393,6 +393,7 @@ function Viewer(world, opts) {
       this.renderWorld();
       return true;
     }
+    return false;
   }, true);
 
   world.on('remove-fixture', obj => obj.ui && obj.ui.remove());
