@@ -383,13 +383,13 @@ function Viewer(world, opts) {
   const timeStep = 1 / this._options.hz;
   let elapsedTime = 0;
   this.tick(dt => {
-    dt = dt * 0.001 * options.speed;
-    elapsedTime += dt;
-    while (elapsedTime > timeStep) {
-      world.step(timeStep);
-      elapsedTime -= timeStep;
-    }
     if (!this.destroyed) {
+      dt = dt * 0.001 * options.speed;
+      elapsedTime += dt;
+      while (elapsedTime > timeStep) {
+        world.step(timeStep);
+        elapsedTime -= timeStep;
+      }
       this.renderWorld();
       return true;
     }
