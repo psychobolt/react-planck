@@ -3,6 +3,7 @@ import invariant from 'fbjs/lib/invariant';
 import { Body, Vec2 } from 'planck-js';
 
 import TYPES, { CONSTANTS, mapIdToUserData, mapBodyPropsToUserData } from './Planck.types';
+import { JointTypes } from './types';
 
 function indexProps(dictionary, props) {
   Object.entries(props).forEach(([key, value]) => {
@@ -39,13 +40,6 @@ export function diffProps(oldProps, newProps) {
   return updatePayload.length ? updatePayload : null;
 }
 
-function updateJoint(instance, props) {
-  instance.update(mapBodyPropsToUserData(props));
-  const { parent, instances } = instance;
-  instances.map(joint => parent.destroyJoint(joint));
-  instance.setInstances(instance.getJoints(parent).map(joint => parent.createJoint(joint)));
-}
-
 export function updateProps(instance, updatePayload, type, oldProps, newProps) {
   if (type === CONSTANTS.Box) {
     Object.assign(instance, TYPES[CONSTANTS.Box](newProps));
@@ -60,7 +54,9 @@ export function updateProps(instance, updatePayload, type, oldProps, newProps) {
   } else if (type === CONSTANTS.Joint) {
     instance.update(mapBodyPropsToUserData(newProps));
     if (updatePayload.includes('type')) {
-      updateJoint(instance, newProps);
+      const { parent, instances } = instance;
+      instances.map(joint => parent.destroyJoint(joint));
+      instance.setInstances(instance.getJoints(parent).map(joint => parent.createJoint(joint)));
       return;
     }
   }
@@ -113,18 +109,25 @@ export function updateProps(instance, updatePayload, type, oldProps, newProps) {
       });
     } else if (key === 'bodyA') {
       const body = instance.getBody('$$bodyA');
-      instance.instances.forEach(joint => {
-        Object.assign(joint, { m_bodyA: body });
-        joint.getLocalAnchorA().set(body.getLocalPoint(instance.anchors[0] || joint.getBodyB()));
-        joint.getLocalAxisA().set(body.getLocalVector(body.axis));
-        joint.m_localYAxisA.set(Vec2.cross(1.0, joint.getLocalXAxis()));
-      });
+      if (instance.type === JointTypes.WHEEL) {
+        instance.instances.forEach(joint => {
+          Object.assign(joint, { m_bodyA: body });
+          joint.getLocalAnchorA().set(body.getLocalPoint(instance.anchors[0] || joint.getBodyB()));
+          joint.getLocalAxisA().set(body.getLocalVector(body.axis));
+          joint.m_localYAxisA.set(Vec2.cross(1.0, joint.getLocalXAxis()));
+        });
+      }
+      // TODO handle other joint types
     } else if (key === 'bodyB') {
       const body = instance.getBody('$$bodyB');
-      instance.instances.forEach(joint => {
-        Object.assign(joint, { m_bodyB: body });
-        joint.getLocalAnchorB().set(body.getLocalPoint(instance.anchors[0] || body.getPosition()));
-      });
+      if (instance.type === JointTypes.WHEEL) {
+        instance.instances.forEach(joint => {
+          Object.assign(joint, { m_bodyB: body });
+          joint.getLocalAnchorB()
+            .set(body.getLocalPoint(instance.anchors[0] || body.getPosition()));
+        });
+      }
+      // TODO handle other joint types
     } else {
       invariant(false, 'updateProps is NOOP. Make sure you implement it.');
     }
