@@ -51,15 +51,15 @@ export default class PlanckContainer extends React.Component<Props> {
     return { world: this.world };
   }
 
-  componentDidMount({ worldProps }: Props) {
-    const updatePayload = diffProps(worldProps, this.props.worldProps);
-    if (updatePayload.length) {
-      updateProps(this.world, updatePayload, CONSTANTS.World, worldProps, this.props.worldProps);
-    }
+  componentDidMount() {
     this.update();
   }
 
-  componentDidUpdate() {
+  componentDidUpdate({ worldProps }: Props) {
+    const updatePayload = diffProps(worldProps, this.props.worldProps);
+    if (updatePayload && updatePayload.length) {
+      updateProps(this.world, updatePayload, CONSTANTS.World, worldProps, this.props.worldProps);
+    }
     this.update();
   }
 
