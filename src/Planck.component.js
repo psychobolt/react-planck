@@ -107,25 +107,30 @@ export function updateProps(instance, updatePayload, type, oldProps, newProps) {
         joint.getLocalAxisA().set(joint.getBodyA().getLocalVector(value));
         joint.m_localYAxisA.set(Vec2.cross(1.0, joint.getLocalAxisA()));
       });
-    } else if (key === 'bodyA') {
-      const body = instance.getBody('$$bodyA');
+    } else if (type === CONSTANTS.Joint) {
       if (instance.type === JointTypes.WHEEL) {
-        instance.instances.forEach(joint => {
-          Object.assign(joint, { m_bodyA: body });
-          joint.getLocalAnchorA().set(body.getLocalPoint(instance.anchors[0] || joint.getBodyB()));
-          joint.getLocalAxisA().set(body.getLocalVector(instance.axis));
-          joint.m_localYAxisA.set(Vec2.cross(1.0, joint.getLocalAxisA()));
-        });
-      }
-      // TODO handle other joint types
-    } else if (key === 'bodyB') {
-      const body = instance.getBody('$$bodyB');
-      if (instance.type === JointTypes.WHEEL) {
-        instance.instances.forEach(joint => {
-          Object.assign(joint, { m_bodyB: body });
-          joint.getLocalAnchorB()
-            .set(body.getLocalPoint(instance.anchors[0] || body.getPosition()));
-        });
+        if (key === 'anchors') {
+          instance.instances.forEac(joint => {
+            joint.getLocalAnchorA().set(joint.getBodyA().getLocalPoint(value[0]));
+            joint.getLocalAnchorB().set(joint.getBodyB().getLocalPoint(value[0]));
+          });
+        } else if (key === 'bodyA') {
+          const body = instance.getBody('$$bodyA');
+          instance.instances.forEach(joint => {
+            Object.assign(joint, { m_bodyA: body });
+            joint.getLocalAnchorA()
+              .set(body.getLocalPoint(instance.anchors[0] || joint.getBodyB()));
+            joint.getLocalAxisA().set(body.getLocalVector(instance.axis));
+            joint.m_localYAxisA.set(Vec2.cross(1.0, joint.getLocalAxisA()));
+          });
+        } else if (key === 'bodyB') {
+          const body = instance.getBody('$$bodyB');
+          instance.instances.forEach(joint => {
+            Object.assign(joint, { m_bodyB: body });
+            joint.getLocalAnchorB()
+              .set(body.getLocalPoint(instance.anchors[0] || body.getPosition()));
+          });
+        }
       }
       // TODO handle other joint types
     } else {
