@@ -96,46 +96,50 @@ export default class Car extends React.Component<Props, State> {
   HZ = 4.0
 
   render() {
-    return [
-      <Body key="car" id="car" ref={this.setCar} type="dynamic" position={new Vec2(0.0, 1.0)}>
-        <Fixture density={1.0}>
-          <Polygon vertices={[
-            new Vec2(-1.5, -0.5),
-            new Vec2(1.5, -0.5),
-            new Vec2(1.5, 0.0),
-            new Vec2(0.0, 0.9),
-            new Vec2(-1.15, 0.9),
-            new Vec2(-1.5, 0.2),
-          ]}
-          />
-        </Fixture>
-      </Body>,
-      <Body key="wheel_back" id="wheel_back" type="dynamic" position={new Vec2(-1.0, 0.35)}><Fixture density={1.0} friction={0.9}><Circle radius={0.4} /></Fixture></Body>,
-      <Joint
-        key="spring_back"
-        type="wheel"
-        motorSpeed={this.state.speed}
-        maxMotorTorque={20.0}
-        enableMotor={this.state.enableSpringBackMotor}
-        frequencyHz={this.state.hz}
-        dampingRatio={ZETA}
-        bodyA="car"
-        bodyB="wheel_back"
-        axis={new Vec2(0.0, 1.0)}
-      />,
-      <Body key="wheel_front" id="wheel_front" type="dynamic" position={new Vec2(1.0, 0.4)}><Fixture density={1.0} friction={0.9}><Circle radius={0.4} /></Fixture></Body>,
-      <Joint
-        key="spring_front"
-        type="wheel"
-        motorSpeed={0.0}
-        maxMotorTorque={10.0}
-        enableMotor={false}
-        frequencyHz={this.state.hz}
-        dampingRatio={ZETA}
-        bodyA="car"
-        bodyB="wheel_front"
-        axis={new Vec2(0.0, 1.0)}
-      />,
-    ];
+    return (
+      <React.Fragment>
+        <Body key="car" id="car" ref={this.setCar} type="dynamic" position={new Vec2(0.0, 1.0)}>
+          <Fixture density={1.0}>
+            <Polygon vertices={[
+              new Vec2(-1.5, -0.5),
+              new Vec2(1.5, -0.5),
+              new Vec2(1.5, 0.0),
+              new Vec2(0.0, 0.9),
+              new Vec2(-1.15, 0.9),
+              new Vec2(-1.5, 0.2),
+            ]}
+            />
+          </Fixture>
+        </Body>
+        <Body key="wheel_back" id="wheel_back" type="dynamic"><Fixture density={1.0} friction={0.9}><Circle radius={0.4} center={new Vec2(-1.0, 0.35)} /></Fixture></Body>,
+        <Joint
+          key="spring_back"
+          type="wheel"
+          motorSpeed={this.state.speed}
+          maxMotorTorque={20.0}
+          enableMotor={this.state.enableSpringBackMotor}
+          frequencyHz={this.state.hz}
+          dampingRatio={ZETA}
+          bodyA="car"
+          bodyB="wheel_back"
+          axis={new Vec2(0.0, 1.0)}
+          anchors={[new Vec2(-1.0, 0.35)]}
+        />
+        <Body key="wheel_front" id="wheel_front" type="dynamic"><Fixture density={1.0} friction={0.9}><Circle radius={0.4} center={new Vec2(1.0, 0.4)} /></Fixture></Body>,
+        <Joint
+          key="spring_front"
+          type="wheel"
+          motorSpeed={0.0}
+          maxMotorTorque={10.0}
+          enableMotor={false}
+          frequencyHz={this.state.hz}
+          dampingRatio={ZETA}
+          bodyA="car"
+          bodyB="wheel_front"
+          axis={new Vec2(0.0, 1.0)}
+          anchors={[new Vec2(1.0, 0.4)]}
+        />
+      </React.Fragment>
+    );
   }
 }

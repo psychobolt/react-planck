@@ -101,6 +101,8 @@ const defaultHostConfig = {
       } else if (child instanceof JointDef) {
         child.setParent(world);
         child.setInstances(child.getJoints().map(joint => world.createJoint(joint)));
+      } else if (!child) {
+        // do nothing
       } else {
         invariant(false, 'appendChildToContainer is NOOP. Make sure you implement it.');
       }
@@ -146,6 +148,8 @@ const defaultHostConfig = {
       } else if (child instanceof JointDef) {
         child.instances.forEach(joint => world.destroyJoint(joint));
         child.setInstances(null);
+      } else if (!child) {
+        // do nothing
       } else {
         invariant(false, 'removeChildFromContainer is NOOP. Make sure you implement it.');
       }
