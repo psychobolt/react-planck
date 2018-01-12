@@ -114,7 +114,7 @@ export function updateProps(instance, updatePayload, type, oldProps, newProps) {
           Object.assign(joint, { m_bodyA: body });
           joint.getLocalAnchorA().set(body.getLocalPoint(instance.anchors[0] || joint.getBodyB()));
           joint.getLocalAxisA().set(body.getLocalVector(instance.axis));
-          joint.m_localYAxisA.set(Vec2.cross(1.0, joint.getLocalXAxis()));
+          joint.m_localYAxisA.set(Vec2.cross(1.0, joint.getLocalAxisA()));
         });
       }
       // TODO handle other joint types

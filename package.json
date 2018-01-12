@@ -1,6 +1,6 @@
 {
   "name": "react-planck",
-  "version": "0.0.38",
+  "version": "0.0.39",
   "description": "React fiber renderer and component container for Planck.js",
   "main": "dist/index.js",
   "repository": "https://github.com/psychobolt/react-planck.git",
