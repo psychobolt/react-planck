@@ -110,16 +110,17 @@ export function updateProps(instance, updatePayload, type, oldProps, newProps) {
     } else if (type === CONSTANTS.Joint) {
       if (instance.type === JointTypes.WHEEL) {
         if (key === 'anchors') {
-          instance.instances.forEac(joint => {
-            joint.getLocalAnchorA().set(joint.getBodyA().getLocalPoint(value[0]));
-            joint.getLocalAnchorB().set(joint.getBodyB().getLocalPoint(value[0]));
+          instance.instances.forEach(joint => {
+            const point = value[0] || joint.getBodyB().getPosition();
+            joint.getLocalAnchorA().set(joint.getBodyA().getLocalPoint(point));
+            joint.getLocalAnchorB().set(joint.getBodyB().getLocalPoint(point));
           });
         } else if (key === 'bodyA') {
           const body = instance.getBody('$$bodyA');
           instance.instances.forEach(joint => {
             Object.assign(joint, { m_bodyA: body });
             joint.getLocalAnchorA()
-              .set(body.getLocalPoint(instance.anchors[0] || joint.getBodyB()));
+              .set(body.getLocalPoint(instance.anchors[0] || joint.getBodyB().getPosition()));
             joint.getLocalAxisA().set(body.getLocalVector(instance.axis));
             joint.m_localYAxisA.set(Vec2.cross(1.0, joint.getLocalAxisA()));
           });
