@@ -313,17 +313,6 @@ export default (opts, callback) => {
         }
       });
 
-    const onPauseKey = e => {
-      switch (e.keyCode) {
-        case 'P'.charCodeAt(0):
-          testbed.togglePause();
-          break;
-        default:
-          break;
-      }
-    };
-    window.addEventListener('keydown', onPauseKey, false);
-
     const downKeys = {};
     const onKeydown = e => {
       const { keyCode } = e;
@@ -342,7 +331,6 @@ export default (opts, callback) => {
     testbed.destroy = () => {
       viewer.destroyed = true;
       viewer._world = null;
-      window.removeEventListener('keydown', onPauseKey);
       window.removeEventListener('keydown', onKeydown);
       window.removeEventListener('keyup', onKeyup);
       Object.keys(testbed).forEach(key => { testbed[key] = null; });
