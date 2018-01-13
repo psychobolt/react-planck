@@ -17,15 +17,11 @@ export default class View extends React.Component<Props, State> {
     super(props);
     this.state = {
       key: `child_${new Date().getTime()}`,
-      paused: true,
+      paused: false,
     };
     this.planckProps = {
       viewProps: testbed => {
-        this.togglePause = () => testbed.togglePause();
-        const paused = testbed.isPaused();
-        if (paused !== this.state.paused) {
-          this.setState({ paused });
-        }
+        this.testbed = testbed;
         return {
           _pause: () => this.setState({ paused: true }),
           _resume: () => this.setState({ paused: false }),
@@ -34,13 +30,15 @@ export default class View extends React.Component<Props, State> {
     };
   }
 
+  togglePause = () => this.testbed.togglePause();
+
   reset = () => this.setState({
     key: `child_${new Date().getTime()}`,
-    paused: true,
+    paused: false,
   });
 
   planckProps: any
-  togglePause: () => void
+  testbed: any
 
   render() {
     return (
