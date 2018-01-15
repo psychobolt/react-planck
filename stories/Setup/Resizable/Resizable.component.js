@@ -41,13 +41,13 @@ export default class extends React.Component<Props, State> {
       <div style={{ width, height }}>
         <Resizable onResizeStop={this.onResizeStop}>
           <PlanckContainer
-            viewProps={() => ({
+            viewProps={{
               width,
               height,
               pixelsPerMeter: this.props.ratio,
               x: 0,
               y: 0,
-            })}
+            }}
           >
             <Body>
               <Fixture density={0.0}>

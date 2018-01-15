@@ -23,6 +23,8 @@ export default class View extends React.Component<Props, State> {
       viewProps: testbed => {
         this.testbed = testbed;
         return {
+          width: 'calc(100% - 2px)',
+          height: 'calc(100vh - 40px)',
           _pause: () => this.setState({ paused: true }),
           _resume: () => this.setState({ paused: false }),
         };

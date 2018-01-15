@@ -44,13 +44,11 @@ export default class Scene extends React.Component<Props, State> {
 
   render() {
     let { viewProps } = this.props;
-    if (this.state.started) {
-      viewProps = config => ({
-        ...(typeof viewProps === 'function' ? this.props.viewProps(config) : viewProps),
-        keydown: this.car.onKeyDown(config),
-        step: this.car.onStep(config),
-      });
-    }
+    viewProps = config => ({
+      ...(typeof viewProps === 'function' ? this.props.viewProps(config) : viewProps),
+      keydown: this.state.started ? this.car.onKeyDown(config) : null,
+      step: this.state.started ? this.car.onStep(config) : null,
+    });
     return (
       <PlanckContainer {...this.props} viewProps={viewProps}>
         <Ground />

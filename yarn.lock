@@ -5640,9 +5640,9 @@ pkg-up@^2.0.0:
   dependencies:
     find-up "^2.1.0"
 
-planck-js@^0.1.36:
-  version "0.1.36"
-  resolved "https://registry.yarnpkg.com/planck-js/-/planck-js-0.1.36.tgz#8d0aa7e3f6153566df05f93a548024dd75895c3b"
+planck-js@^0.1.38:
+  version "0.1.38"
+  resolved "https://registry.yarnpkg.com/planck-js/-/planck-js-0.1.38.tgz#b2ae9a20cfcb7054a19cd63873b5bf610bc0852d"
 
 pluralize@^7.0.0:
   version "7.0.0"

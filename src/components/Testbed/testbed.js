@@ -67,6 +67,7 @@ export default (opts, callback) => {
     testbed.speed = 1;
     testbed.activeKeys = {};
     testbed.background = '#222222';
+    testbed.stage = stage;
 
     let statusText = '';
     const statusMap = {};
@@ -193,8 +194,6 @@ export default (opts, callback) => {
         b = b * 256 | 0;
         return `rgb(${r},${g},${b})`;
       };
-
-      testbed.stage = stage;
     })();
 
     const world = callback(testbed);
@@ -354,35 +353,23 @@ export default (opts, callback) => {
 Viewer._super = Stage;
 Viewer.prototype = Stage._create(Viewer._super.prototype);
 
-function Viewer(world, opts) {
+function Viewer(world, testbed) {
   Viewer._super.call(this);
   this.label('Planck');
 
-  opts = opts || {};
-
-  this._options = {};
-  const options = this._options;
-  this._options.speed = opts.speed || 1;
-  this._options.hz = opts.hz || 60;
-  if (Math.abs(this._options.hz) < 1) {
-    this._options.hz = 1 / this._options.hz;
-  }
-  this._options.ratio = opts.ratio || 16;
-  this._options.lineWidth = 2 / this._options.ratio;
-
   this._world = world;
+  this.setOptions(testbed);
 
-  const timeStep = 1 / this._options.hz;
   let elapsedTime = 0;
   this.tick(dt => {
     if (this.destroyed) {
       return false;
     }
-    dt = dt * 0.001 * options.speed;
+    dt = dt * 0.001 * this._options.speed;
     elapsedTime += dt;
-    while (elapsedTime > timeStep) {
-      world.step(timeStep);
-      elapsedTime -= timeStep;
+    while (elapsedTime > this._timeStep) {
+      world.step(this._timeStep);
+      elapsedTime -= this._timeStep;
     }
     this.renderWorld();
     return true;
@@ -393,9 +380,30 @@ function Viewer(world, opts) {
   world.on('remove-joint', obj => obj.ui && obj.ui.remove());
 }
 
+Viewer.prototype.setOptions = function setOptions(testbed) {
+  this._options = {};
+  this._options.speed = testbed.speed || 1;
+  this._options.hz = testbed.hz || 60;
+  if (Math.abs(this._options.hz) < 1) {
+    this._options.hz = 1 / this._options.hz;
+  }
+  this._options.ratio = testbed.ratio || 16;
+  this._options.lineWidth = 2 / this._options.ratio;
+  this._timeStep = 1 / this._options.hz;
+  this._testbed = testbed;
+};
+
 Viewer.prototype.renderWorld = function renderWorld() {
   const world = this._world;
   const viewer = this;
+
+  let reset = false;
+  if (this._options.speed !== this._testbed.speed ||
+    this._options.hz !== this._testbed.hz ||
+    this._options.ratio !== this._testbed.ratio) {
+    this.setOptions(this._testbed);
+    reset = true;
+  }
 
   for (let b = world.getBodyList(); b; b = b.getNext()) {
     for (let f = b.getFixtureList(); f; f = f.getNext()) {
@@ -404,7 +412,7 @@ Viewer.prototype.renderWorld = function renderWorld() {
       if (!f.render) {
         f.render = {};
       }
-      if (f.__lastRender !== f.render) {
+      if (reset || f.__lastRender !== f.render) {
         if (f.render && f.render.stroke) {
           options.strokeStyle = f.render.stroke;
         } else if (b.render && b.render.stroke) {
@@ -472,15 +480,27 @@ Viewer.prototype.renderWorld = function renderWorld() {
   for (let j = world.getJointList(); j; j = j.getNext()) {
     const a = j.getAnchorA();
     const b = j.getAnchorB();
+    let changed = false;
+    let ui;
 
-    if (!j.ui) {
-      this._options.strokeStyle = 'rgba(255,255,255,0.2)';
+    if (reset || j.__render !== j.render) {
+      const options = {};
+      options.strokeStyle = 'rgba(255,255,255,0.2)';
 
-      j.ui = viewer.drawJoint(j, this._options);
-      j.ui.pin('handle', 0.5);
+      j.render = Object.assign({}, this._options, options);
+      j.__lastRender = j.render;
+      changed = true;
+
+      ui = viewer.drawJoint(j, j.render);
+    }
+
+    if (changed) {
       if (j.ui) {
-        j.ui.appendTo(viewer);
+        j.ui.remove();
       }
+      j.ui = ui;
+      j.ui.pin('handle', 0.5);
+      j.ui.appendTo(viewer);
     }
 
     if (j.ui) {

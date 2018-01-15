@@ -1,6 +1,6 @@
 {
   "name": "react-planck",
-  "version": "0.0.44",
+  "version": "0.0.45",
   "description": "React fiber renderer and component container for Planck.js",
   "main": "dist/index.js",
   "repository": "https://github.com/psychobolt/react-planck.git",
@@ -68,7 +68,7 @@
     "flow-bin": "^0.59.0",
     "flow-typed": "2.2.3",
     "jest": "^21.2.1",
-    "planck-js": "^0.1.36",
+    "planck-js": "^0.1.38",
     "raf": "^3.4.0",
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
@@ -90,7 +90,7 @@
     "styled-components": "^2.4.0"
   },
   "peerDependencies": {
-    "planck-js": "^0.1.36",
+    "planck-js": "^0.1.38",
     "react": "^16.2.0",
     "react-dom": "^16.2.0"
   }
