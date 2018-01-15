@@ -328,6 +328,7 @@ export default (opts, callback) => {
     };
     window.addEventListener('keyup', onKeyup);
     testbed.destroy = () => {
+      stage.empty();
       viewer.destroyed = true;
       viewer._world = null;
       window.removeEventListener('keydown', onKeydown);

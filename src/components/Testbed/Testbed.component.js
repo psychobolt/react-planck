@@ -20,11 +20,11 @@ type Config = {
   ratio: number,
   stage: Stage,
   destroy: () => void,
-  paused: () => void,
+  pause: () => void,
   isPaused: () => boolean,
 }
 
-function getProps(props: Props, config: Config) {
+function getProps(props: any, config: any): any {
   const { getTestbedProps, world, ...rest } = props;
   return Object.assign({}, rest, config && getTestbedProps ? getTestbedProps(config) : {});
 }
@@ -41,18 +41,19 @@ export default class Testbed extends React.Component<Props> {
       const { width, height, ...rest } = getProps(this.props, config);
       this.config = Object.assign(config, rest);
       if (this.canvas) {
-        this.resize(this.canvas);
+        this.resize(this.canvas, this.config);
       }
       return this.props.world;
     });
   }
 
-  componentDidUpdate(prevProps: Props) {
+  componentDidUpdate(props: Props) {
     if (this.canvas && this.config) {
+      const prevProps = getProps(props, this.config);
       const { width, height, ...rest } = getProps(this.props, this.config);
       Object.assign(this.config, rest);
       if (width !== prevProps.width || height !== prevProps.height) {
-        this.resize(this.canvas);
+        this.resize(this.canvas, this.config);
       }
     }
   }
@@ -62,7 +63,6 @@ export default class Testbed extends React.Component<Props> {
       Object.assign(this.canvas, { width: 0, height: 0 });
     }
     if (this.config) {
-      this.config.stage.empty();
       this.config.destroy();
       this.config = null;
     }
@@ -70,15 +70,15 @@ export default class Testbed extends React.Component<Props> {
 
   setCanvas = (ref: ?HTMLCanvasElement) => { this.canvas = ref; }
 
-  resize(canvas: HTMLCanvasElement) {
-    const { pixelsPerMeter } = getProps(this.props, this.config);
-    const { stage, pause, isPaused } = this.config;
+  resize(canvas: HTMLCanvasElement, config: Config) {
+    const { pixelsPerMeter } = this.props;
+    const { stage, pause, isPaused } = config;
     const { clientWidth, clientHeight } = canvas;
     const paused = isPaused();
     Object.assign(canvas, { width: clientWidth, height: clientHeight });
     stage.viewport(clientWidth, clientHeight, 1);
     if (paused) pause();
-    Object.assign(this.config, {
+    Object.assign(config, {
       width: clientWidth / pixelsPerMeter,
       height: clientHeight / pixelsPerMeter,
       ratio: pixelsPerMeter,
@@ -89,7 +89,7 @@ export default class Testbed extends React.Component<Props> {
   config: ?Config;
 
   render() {
-    const { width, height } = getProps(this.props, {});
+    const { width, height } = getProps(this.props, this.config || {});
     return <canvas id="stage" ref={this.setCanvas} style={{ width, height }} />;
   }
 }
