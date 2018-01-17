@@ -92,48 +92,79 @@ export function updateProps(instance, updatePayload, type, oldProps, newProps) {
         default:
           invariant(false, 'Body type unsupported.');
       }
+    } else if (key === 'fixedRotation') {
+      instance.instance.setFixedRotation(value);
     } else if (key === 'linearVelocity') {
       instance.instance.setLinearVelocity(value);
+    } else if (key === 'linearDamping') {
+      instance.instance.setLinearDamping(value);
+    } else if (key === 'angularDamping') {
+      instance.instance.setAngularDamping(value);
+    } else if (key === 'bullet') {
+      instance.instance.setBullet(value);
     } else if (key === 'density') {
       instance.instance.setDensity(value);
     } else if (key === 'friction') {
       instance.instance.setFriction(value);
+    } else if (key === 'restitution') {
+      instance.instance.setRestitution(value);
     } else if (key === 'render') {
       Object.assign(instance.instance, { render: value });
     } else if (key === 'gravity') {
       instance.setGravity(value);
     } else if (key === 'axis') {
       instance.instances.forEach(joint => {
-        joint.getLocalAxisA().set(joint.getBodyA().getLocalVector(value));
+        if (instance.type === JointTypes.WHEEL) {
+          joint.getLocalAxisA().set(joint.getBodyA().getLocalVector(value || Vec2.neo(1.0, 0.0)));
+        } else if (instance.type === JointTypes.PRISMATIC) {
+          joint.getLocalAxisA()
+            .set(instance.def.localAnchorA || joint.getBodyA().getLocalVector(value));
+          joint.getLocalAxisA().normalize();
+        }
         joint.m_localYAxisA.set(Vec2.cross(1.0, joint.getLocalAxisA()));
       });
     } else if (type === CONSTANTS.Joint) {
-      if (instance.type === JointTypes.WHEEL) {
-        if (key === 'anchors') {
-          instance.instances.forEach(joint => {
-            const point = value[0] || joint.getBodyB().getPosition();
-            joint.getLocalAnchorA().set(joint.getBodyA().getLocalPoint(point));
-            joint.getLocalAnchorB().set(joint.getBodyB().getLocalPoint(point));
-          });
-        } else if (key === 'bodyA') {
-          const body = instance.getBody('$$bodyA');
-          instance.instances.forEach(joint => {
-            Object.assign(joint, { m_bodyA: body });
-            joint.getLocalAnchorA()
-              .set(body.getLocalPoint(instance.anchors[0] || joint.getBodyB().getPosition()));
-            joint.getLocalAxisA().set(body.getLocalVector(instance.axis));
+      if (key === 'anchors') {
+        instance.instances.forEach(joint => {
+          const point = value[0] || joint.getBodyB().getPosition();
+          joint.getLocalAnchorA()
+            .set(instance.def.localAnchorA || joint.getBodyA().getLocalPoint(point));
+          joint.getLocalAnchorB()
+            .set(instance.def.localAnchorB || joint.getBodyB().getLocalPoint(point));
+        });
+      } else if (key === 'bodyA') {
+        const body = instance.getBody('$$bodyA');
+        instance.instances.forEach(joint => {
+          Object.assign(joint, { m_bodyA: body });
+          joint.getLocalAnchorA()
+            .set(instance.def.localAnchorA ||
+                 body.getLocalPoint(instance.anchors[0] || joint.getBodyB().getPosition()));
+          if (instance.type === JointTypes.WHEEL || instance.type === JointTypes.PRISMATIC) {
+            joint.getLocalAxisA()
+              .set(instance.def.localAxisA || body.getLocalVector(instance.axis));
+            if (instance.type === JointTypes.PRISMATIC) joint.getLocalAxisA().normalize();
             joint.m_localYAxisA.set(Vec2.cross(1.0, joint.getLocalAxisA()));
-          });
-        } else if (key === 'bodyB') {
-          const body = instance.getBody('$$bodyB');
-          instance.instances.forEach(joint => {
-            Object.assign(joint, { m_bodyB: body });
+          }
+          if (instance.type === JointTypes.REVOLUTE || instance.type === JointTypes.PRISMATIC) {
+            joint.getReferenceAngle()
+              .set(joint.getBodyB().getAngle() - joint.getBodyA().getAngle());
+          }
+        });
+      } else if (key === 'bodyB') {
+        const body = instance.getBody('$$bodyB');
+        instance.instances.forEach(joint => {
+          Object.assign(joint, { m_bodyB: body });
+          if (instance.type === JointTypes.WHEEL || instance.type === JointTypes.PRISMATIC) {
             joint.getLocalAnchorB()
-              .set(body.getLocalPoint(instance.anchors[0] || body.getPosition()));
-          });
-        }
+              .set(instance.def.localAnchorB ||
+                   body.getLocalPoint(instance.anchors[0] || body.getPosition()));
+          }
+          if (instance.type === JointTypes.REVOLUTE || instance.type === JointTypes.PRISMATIC) {
+            joint.getReferenceAngle()
+              .set(joint.getBodyB().getAngle() - joint.getBodyA().getAngle());
+          }
+        });
       }
-      // TODO handle other joint types
     } else {
       invariant(false, 'updateProps is NOOP. Make sure you implement it.');
     }

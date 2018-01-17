@@ -12,7 +12,7 @@ import Stage from 'stage-js/platform/web';
 // step: function, is always called
 // paint: function, is called only after repaint
 
-const { Vec2 } = planck;
+const { Vec2, Polygon, Circle } = planck;
 
 export default (opts, callback) => {
   if (typeof opts === 'function') {
@@ -221,8 +221,8 @@ export default (opts, callback) => {
         testbed.step(dt, t);
       }
 
-      if (targetBody) {
-        testbed.drawSegment(targetBody.getPosition(), mouseMove, 'rgba(255,255,255,0.2)');
+      if (targetFixture) {
+        testbed.drawSegment(getFixturePosition(targetFixture), mouseMove, 'rgba(255,255,255,0.2)');
       }
 
       if (lastDrawHash !== drawHash) {
@@ -243,43 +243,61 @@ export default (opts, callback) => {
     stage.pin('alignY', -0.5);
     stage.prepend(viewer);
 
-    function findBody(point) {
-      let body;
+    function findFixture(point) {
+      let shape;
       const aabb = planck.AABB(point, point);
       world.queryAABB(aabb, fixture => {
-        if (body) {
+        if (shape) {
           return null;
         }
         if (!fixture.getBody().isDynamic() || !fixture.testPoint(point)) {
           return null;
         }
-        body = fixture.getBody();
+        shape = fixture;
         return true;
       });
-      return body;
+      return shape;
+    }
+
+    function getFixturePosition(fixture) {
+      const type = fixture.getType();
+      const shape = fixture.getShape();
+      const body = fixture.getBody();
+      let position = body.getPosition();
+      if (type === Polygon.TYPE) {
+        position = body.getWorldPoint(shape.m_centroid);
+      } else if (type === Circle.TYPE) {
+        position = body.getWorldPoint(shape.getCenter());
+      }
+      return position;
     }
 
     const mouseGround = world.createBody();
     let mouseJoint;
 
-    let targetBody;
+    let targetFixture;
     const mouseMove = { x: 0, y: 0 };
 
     viewer.attr('spy', true)
       .on(Stage.Mouse.START, point => {
-        if (targetBody) {
+        if (targetFixture) {
           return;
         }
 
-        const body = findBody(point);
-        if (!body) {
+        const fixture = findFixture(point);
+        if (!fixture) {
           return;
         }
 
         if (testbed.mouseForce) {
-          targetBody = body;
+          targetFixture = fixture;
         } else {
-          mouseJoint = planck.MouseJoint({ maxForce: 1000 }, mouseGround, body, Vec2(point));
+          mouseJoint = planck.MouseJoint(
+            { maxForce: 1000 },
+            mouseGround,
+            fixture.getBody(),
+            Vec2(point),
+          );
           world.createJoint(mouseJoint);
         }
       })
@@ -296,10 +314,11 @@ export default (opts, callback) => {
           world.destroyJoint(mouseJoint);
           mouseJoint = null;
         }
-        if (targetBody) {
-          const force = Vec2.sub(point, targetBody.getPosition());
+        if (targetFixture) {
+          const targetBody = targetFixture.getBody();
+          const force = Vec2.sub(point, getFixturePosition(targetFixture));
           targetBody.applyForceToCenter(force.mul(testbed.mouseForce), true);
-          targetBody = null;
+          targetFixture = null;
         }
       })
       .on(Stage.Mouse.CANCEL, () => {
@@ -307,8 +326,8 @@ export default (opts, callback) => {
           world.destroyJoint(mouseJoint);
           mouseJoint = null;
         }
-        if (targetBody) {
-          targetBody = null;
+        if (targetFixture) {
+          targetFixture = null;
         }
       });
 

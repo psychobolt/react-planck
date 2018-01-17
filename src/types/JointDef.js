@@ -1,9 +1,10 @@
-import { DistanceJoint, WheelJoint, RevoluteJoint } from 'planck-js';
+import { DistanceJoint, WheelJoint, RevoluteJoint, PrismaticJoint } from 'planck-js';
 
 export const JointTypes = {
   REVOLUTE: 'revolute',
   WHEEL: 'wheel',
   CHAIN: 'chain',
+  PRISMATIC: 'prismatic',
 };
 
 const findBody = (body, id) => {
@@ -97,6 +98,15 @@ export default class JointDef {
         break;
       case JointTypes.WHEEL:
         joint = new WheelJoint(def, bodyA, bodyB, anchors[0] || bodyB.getPosition(), this.axis);
+        break;
+      case JointTypes.PRISMATIC:
+        joint = new PrismaticJoint(
+          def,
+          bodyA,
+          bodyB,
+          anchors[0] || joint.getBodyB().getPosition(),
+          this.axis,
+        );
         break;
       case JointTypes.CHAIN:
       default: {

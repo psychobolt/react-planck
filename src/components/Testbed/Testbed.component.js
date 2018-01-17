@@ -38,7 +38,7 @@ export default class Testbed extends React.Component<Props> {
 
   componentDidMount() {
     testbed(config => {
-      const { width, height, ...rest } = getProps(this.props, config);
+      const { width, height, pixelsPerMeter, ...rest } = getProps(this.props, config);
       this.config = Object.assign(config, rest);
       if (this.canvas) {
         this.resize(this.canvas, this.config);
@@ -71,7 +71,7 @@ export default class Testbed extends React.Component<Props> {
   setCanvas = (ref: ?HTMLCanvasElement) => { this.canvas = ref; }
 
   resize(canvas: HTMLCanvasElement, config: Config) {
-    const { pixelsPerMeter } = this.props;
+    const { pixelsPerMeter } = getProps(this.props, config);
     const { stage, pause, isPaused } = config;
     const { clientWidth, clientHeight } = canvas;
     const paused = isPaused();
