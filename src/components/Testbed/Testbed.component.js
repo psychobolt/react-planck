@@ -10,7 +10,6 @@ export type PropsWithStage = (stage: Stage) => {}
 export type Props = {
   width: string | number,
   height: string | number,
-  pixelsPerMeter: number,
   world: World,
 }
 
