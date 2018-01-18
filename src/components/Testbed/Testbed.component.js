@@ -38,7 +38,7 @@ export default class Testbed extends React.Component<Props> {
   componentDidMount() {
     testbed(config => {
       const { width, height, pixelsPerMeter, ...rest } = getProps(this.props, config);
-      this.config = Object.assign(config, rest);
+      this.config = Object.assign(config, rest, { ratio: pixelsPerMeter });
       if (this.canvas) {
         this.resize(this.canvas, this.config);
       }
@@ -49,8 +49,8 @@ export default class Testbed extends React.Component<Props> {
   componentDidUpdate(props: Props) {
     if (this.canvas && this.config) {
       const prevProps = getProps(props, this.config);
-      const { width, height, ...rest } = getProps(this.props, this.config);
-      Object.assign(this.config, rest);
+      const { width, height, pixelsPerMeter, ...rest } = getProps(this.props, this.config);
+      Object.assign(this.config, rest, { ratio: pixelsPerMeter });
       if (width !== prevProps.width || height !== prevProps.height) {
         this.resize(this.canvas, this.config);
       }
@@ -80,7 +80,6 @@ export default class Testbed extends React.Component<Props> {
     Object.assign(config, {
       width: clientWidth / pixelsPerMeter,
       height: clientHeight / pixelsPerMeter,
-      ratio: pixelsPerMeter,
     });
   }
 
