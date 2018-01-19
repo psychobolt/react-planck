@@ -104,7 +104,7 @@ export default class JointDef {
           def,
           bodyA,
           bodyB,
-          anchors[0] || joint.getBodyB().getPosition(),
+          anchors[0] || bodyB.getPosition(),
           this.axis,
         );
         break;
