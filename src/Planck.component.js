@@ -146,8 +146,9 @@ export function updateProps(instance, updatePayload, type, oldProps, newProps) {
             joint.m_localYAxisA.set(Vec2.cross(1.0, joint.getLocalAxisA()));
           }
           if (instance.type === JointTypes.REVOLUTE || instance.type === JointTypes.PRISMATIC) {
-            joint.getReferenceAngle()
-              .set(joint.getBodyB().getAngle() - joint.getBodyA().getAngle());
+            Object.assign(joint, {
+              m_referenceAngle: joint.getBodyB().getAngle() - joint.getBodyA().getAngle(),
+            });
           }
         });
       } else if (key === 'bodyB') {
@@ -160,8 +161,9 @@ export function updateProps(instance, updatePayload, type, oldProps, newProps) {
                    body.getLocalPoint(instance.anchors[0] || body.getPosition()));
           }
           if (instance.type === JointTypes.REVOLUTE || instance.type === JointTypes.PRISMATIC) {
-            joint.getReferenceAngle()
-              .set(joint.getBodyB().getAngle() - joint.getBodyA().getAngle());
+            Object.assign(joint, {
+              m_referenceAngle: joint.getBodyB().getAngle() - joint.getBodyA().getAngle(),
+            });
           }
         });
       }
