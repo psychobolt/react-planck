@@ -15,6 +15,25 @@ export const plugins = [
     include: 'node_modules/**',
     namedExports: {
       'node_modules/planck-js/testbed/index.js': ['testbed'],
+      'node_modules/react-is/index.js': [
+        'typeOf',
+        'AsyncMode',
+        'ContextConsumer',
+        'ContextProvider',
+        'Element',
+        'ForwardRef',
+        'Fragment',
+        'Portal',
+        'StrictMode',
+        'isAsyncMode',
+        'isContextConsumer',
+        'isContextProvider',
+        'isElement',
+        'isFowardRef',
+        'isFragment',
+        'isPortal',
+        'isStrictMode',
+      ],
     },
   }),
   babel({
@@ -29,5 +48,6 @@ export default {
     'planck-js',
     'react',
     'react-dom',
+    'styled-components',
   ],
 };

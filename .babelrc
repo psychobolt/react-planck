@@ -7,14 +7,18 @@
     "react"
   ],
   "plugins": [
+    ["lodash", {"id": ["lodash", "recompose"]}],
     ["module-resolver", { 
       "root": ["./"],
       "cwd": "./"
-    }]
+    }],
+    "babel-plugin-styled-components"
   ],
   "env": {
     "commonjs": {
-      "plugins": ["transform-es2015-modules-commonjs"]
+      "plugins": [
+        "transform-es2015-modules-commonjs"
+      ]
     }
   }
 }
