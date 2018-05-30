@@ -1,5 +1,6 @@
 # React Planck
 
+[![Stability](https://img.shields.io/badge/Stability-Experimental-Orange.svg)](https://nodejs.org/api/documentation.html#documentation_stability_index)
 [![npm](https://img.shields.io/npm/v/react-planck.svg)](https://www.npmjs.com/package/react-planck)
 [![Build Status](https://travis-ci.org/psychobolt/react-planck.svg?branch=master)](https://travis-ci.org/psychobolt/react-planck)
 [![codecov](https://codecov.io/gh/psychobolt/react-planck/branch/master/graph/badge.svg)](https://codecov.io/gh/psychobolt/react-planck)
@@ -12,7 +13,7 @@ React fiber renderer and component container for [Planck.js](http://piqnt.com/pl
 
 [DEMOS](https://psychobolt.github.io/react-planck)
 
-## Install (Experimental release)
+## Install
 
 Recommended: Planck JS 0.1.x, React, React DOM 16.x.
 ```sh
