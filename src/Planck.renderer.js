@@ -73,76 +73,75 @@ const defaultHostConfig = {
   },
   useSyncScheduling: true,
   now: Date.now,
-  mutation: {
-    commitUpdate(instance, updatePayload, type, oldProps, newProps, internalInstanceHandle) {
-      updateProps(instance, updatePayload, type, oldProps, newProps);
-    },
-    commitMount(instance, type, newProps, internalInstanceHandle) {
-    },
-    commitTextUpdate(instance, type, newProps, internalInstanceHandle) {
-    },
-    resetTextContent(insntace) {
-    },
-    appendChild(parent, child) {
-      if (parent instanceof BodyDef && child instanceof FixtureDef) {
-        const { render, ...def } = child.def;
-        const fixture = parent.instance.createFixture(child.shape, def);
-        fixture.render = render;
-        child.setInstance(fixture);
-      } else if (parent instanceof FixtureDef && child instanceof Shape) {
-        parent.setShape(child);
-      } else {
-        invariant(false, 'appendChild is NOOP. Make sure you implement it.');
-      }
-    },
-    appendChildToContainer(world, child) {
-      if (child instanceof BodyDef) {
-        if (child.instance.m_destroyed) child.setInstance(world.createBody(child.def));
-      } else if (child instanceof JointDef) {
-        child.setParent(world);
-        child.setInstances(child.getJoints().map(joint => world.createJoint(joint)));
-      } else if (!child) {
-        // do nothing
-      } else {
-        invariant(false, 'appendChildToContainer is NOOP. Make sure you implement it.');
-      }
-    },
-    insertBefore(parent, child, beforeChild) {
-      invariant(false, 'insertBefore is NOOP. Make sure you implement it.');
-    },
-    insertInContainerBefore(container, child, beforeChild) {
-      if (child instanceof BodyDef && beforeChild instanceof JointDef) {
-        if (child.instance.m_destroyed) child.setInstance(container.createBody(child.def));
-      } else {
-        invariant(false, 'insertInContainerBefore is NOOP. Make sure you implement it.');
-      }
-    },
-    removeChild(parent, child) {
-      if (parent instanceof BodyDef && child instanceof FixtureDef) {
-        const body = parent.instance;
-        const fixture = child.instance;
-        const next = fixture.getNext();
-        body.destroyFixture(fixture);
-        child.setInstance(null);
-      } else if (parent instanceof FixtureDef && child instanceof Shape) {
-        parent.setShape(null);
-      } else {
-        invariant(false, 'removeChild is NOOP. Make sure you implement it.');
-      }
-    },
-    removeChildFromContainer(world, child) {
-      if (child instanceof BodyDef) {
-        world.destroyBody(child.instance);
-        child.setInstance(null);
-      } else if (child instanceof JointDef) {
-        child.instances.forEach(joint => world.destroyJoint(joint));
-        child.setInstances(null);
-      } else if (!child) {
-        // do nothing
-      } else {
-        invariant(false, 'removeChildFromContainer is NOOP. Make sure you implement it.');
-      }
-    },
+  supportsMutation: true,
+  commitUpdate(instance, updatePayload, type, oldProps, newProps, internalInstanceHandle) {
+    updateProps(instance, updatePayload, type, oldProps, newProps);
+  },
+  commitMount(instance, type, newProps, internalInstanceHandle) {
+  },
+  commitTextUpdate(instance, type, newProps, internalInstanceHandle) {
+  },
+  resetTextContent(insntace) {
+  },
+  appendChild(parent, child) {
+    if (parent instanceof BodyDef && child instanceof FixtureDef) {
+      const { render, ...def } = child.def;
+      const fixture = parent.instance.createFixture(child.shape, def);
+      fixture.render = render;
+      child.setInstance(fixture);
+    } else if (parent instanceof FixtureDef && child instanceof Shape) {
+      parent.setShape(child);
+    } else {
+      invariant(false, 'appendChild is NOOP. Make sure you implement it.');
+    }
+  },
+  appendChildToContainer(world, child) {
+    if (child instanceof BodyDef) {
+      if (child.instance.m_destroyed) child.setInstance(world.createBody(child.def));
+    } else if (child instanceof JointDef) {
+      child.setParent(world);
+      child.setInstances(child.getJoints().map(joint => world.createJoint(joint)));
+    } else if (!child) {
+      // do nothing
+    } else {
+      invariant(false, 'appendChildToContainer is NOOP. Make sure you implement it.');
+    }
+  },
+  insertBefore(parent, child, beforeChild) {
+    invariant(false, 'insertBefore is NOOP. Make sure you implement it.');
+  },
+  insertInContainerBefore(container, child, beforeChild) {
+    if (child instanceof BodyDef && beforeChild instanceof JointDef) {
+      if (child.instance.m_destroyed) child.setInstance(container.createBody(child.def));
+    } else {
+      invariant(false, 'insertInContainerBefore is NOOP. Make sure you implement it.');
+    }
+  },
+  removeChild(parent, child) {
+    if (parent instanceof BodyDef && child instanceof FixtureDef) {
+      const body = parent.instance;
+      const fixture = child.instance;
+      const next = fixture.getNext();
+      body.destroyFixture(fixture);
+      child.setInstance(null);
+    } else if (parent instanceof FixtureDef && child instanceof Shape) {
+      parent.setShape(null);
+    } else {
+      invariant(false, 'removeChild is NOOP. Make sure you implement it.');
+    }
+  },
+  removeChildFromContainer(world, child) {
+    if (child instanceof BodyDef) {
+      world.destroyBody(child.instance);
+      child.setInstance(null);
+    } else if (child instanceof JointDef) {
+      child.instances.forEach(joint => world.destroyJoint(joint));
+      child.setInstances(null);
+    } else if (!child) {
+      // do nothing
+    } else {
+      invariant(false, 'removeChildFromContainer is NOOP. Make sure you implement it.');
+    }
   },
 };
 /* eslint-enable no-unused-vars */
