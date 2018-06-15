@@ -91,6 +91,7 @@
     "semantic-ui-css": "^2.3.1",
     "semantic-ui-react": "^0.80.2",
     "stage-js": "^0.8.10",
+    "storybook-readme": "^3.3.0",
     "styled-components": "^3.3.0",
     "stylelint": "^9.2.1",
     "stylelint-config-standard": "^18.2.0",
