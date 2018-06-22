@@ -4,6 +4,9 @@
     "renderer": "PlanckRenderer",
     "rendererFilename": "Planck.renderer.js",
     "container": "PlanckContainer",
-    "containerFilename": "Planck.container.js"
+    "containerFilename": "Planck.container.js",
+    "provider": "PlanckProvider",
+    "providerFilename": "Planck.provider.js",
+    "componentFilename": "Planck.component.js"
   }
 }
