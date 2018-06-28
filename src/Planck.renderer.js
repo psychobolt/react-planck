@@ -26,7 +26,8 @@ const defaultHostConfig = {
   getPublicInstance(instance) {
     if (instance instanceof BodyDef || instance instanceof FixtureDef) {
       return instance.instance;
-    } else if (instance instanceof JointDef) {
+    }
+    if (instance instanceof JointDef) {
       return instance.instances.length > 1 ? instance.instances : instance.instances[0];
     }
     return instance;
@@ -148,6 +149,7 @@ const defaultHostConfig = {
 
 export default class PlanckRenderer {
   defaultHostConfig = defaultHostConfig;
+
   defaultTypes = TYPES;
 
   constructor() {

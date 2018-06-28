@@ -18,7 +18,9 @@ export default class extends React.Component<Props> {
   render() {
     return (
       <Body id="teeter" ref={this.setTeeter} type="dynamic" position={new Vec2(140.0, 1.0)}>
-        <Fixture density={1.0}><Box hx={10.0} hy={0.25} /></Fixture>
+        <Fixture density={1.0}>
+          <Box hx={10.0} hy={0.25} />
+        </Fixture>
       </Body>
     );
   }

@@ -9,7 +9,7 @@ import Bridge from '../Bridge';
 import Car from '../Car.component';
 
 type Props = {
-  viewProps: ViewProps
+  viewProps?: ViewProps
 }
 
 type State = {
@@ -17,6 +17,8 @@ type State = {
 }
 
 export default class Scene extends React.Component<Props, State> {
+  car = null;
+
   static defaultProps = {
     viewProps: {},
     worldProps: {
@@ -40,28 +42,47 @@ export default class Scene extends React.Component<Props, State> {
     });
   }
 
-  car = null;
-
   render() {
-    let { viewProps } = this.props;
-    viewProps = config => ({
-      ...(typeof viewProps === 'function' ? this.props.viewProps(config) : viewProps),
-      keydown: this.state.started ? this.car.onKeyDown(config) : null,
-      step: this.state.started ? this.car.onStep(config) : null,
+    const { viewProps } = this.props;
+    const { started } = this.state;
+    const getViewProps = config => ({
+      ...(typeof viewProps === 'function' ? viewProps(config) : viewProps),
+      keydown: started ? this.car.onKeyDown(config) : null,
+      step: started ? this.car.onStep(config) : null,
     });
     return (
-      <PlanckContainer {...this.props} viewProps={viewProps}>
+      <PlanckContainer {...this.props} viewProps={getViewProps}>
         <Ground />
         <Teeter />
         <Bridge />
         <Joint type="revolute" bodyA="ground" bodyB="teeter" lowerAngle={(-8.0 * Math.PI) / 180.0} upperAngle={(8.0 * Math.PI) / 180.0} enableLimit />
         <Joint type="revolute" bodyA="ground" bodyB="bridge_block_1" anchors={[new Vec2(160.0, -0.125)]} />
         <Joint type="revolute" bodyA="bridge_block_20" bodyB="ground" anchors={[new Vec2(200.0, -0.125)]} />
-        <Body type="dynamic" position={new Vec2(230.0, 0.5)}><Fixture density={0.5}><Box hx={0.5} hy={0.5} /></Fixture></Body>
-        <Body type="dynamic" position={new Vec2(230.0, 1.5)}><Fixture density={0.5}><Box hx={0.5} hy={0.5} /></Fixture></Body>
-        <Body type="dynamic" position={new Vec2(230.0, 2.5)}><Fixture density={0.5}><Box hx={0.5} hy={0.5} /></Fixture></Body>
-        <Body type="dynamic" position={new Vec2(230.0, 3.5)}><Fixture density={0.5}><Box hx={0.5} hy={0.5} /></Fixture></Body>
-        <Body type="dynamic" position={new Vec2(230.0, 4.5)}><Fixture density={0.5}><Box hx={0.5} hy={0.5} /></Fixture></Body>
+        <Body type="dynamic" position={new Vec2(230.0, 0.5)}>
+          <Fixture density={0.5}>
+            <Box hx={0.5} hy={0.5} />
+          </Fixture>
+        </Body>
+        <Body type="dynamic" position={new Vec2(230.0, 1.5)}>
+          <Fixture density={0.5}>
+            <Box hx={0.5} hy={0.5} />
+          </Fixture>
+        </Body>
+        <Body type="dynamic" position={new Vec2(230.0, 2.5)}>
+          <Fixture density={0.5}>
+            <Box hx={0.5} hy={0.5} />
+          </Fixture>
+        </Body>
+        <Body type="dynamic" position={new Vec2(230.0, 3.5)}>
+          <Fixture density={0.5}>
+            <Box hx={0.5} hy={0.5} />
+          </Fixture>
+        </Body>
+        <Body type="dynamic" position={new Vec2(230.0, 4.5)}>
+          <Fixture density={0.5}>
+            <Box hx={0.5} hy={0.5} />
+          </Fixture>
+        </Body>
         <Car ref={this.setCar} />
       </PlanckContainer>
     );

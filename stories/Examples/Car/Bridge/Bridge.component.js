@@ -12,5 +12,9 @@ export default () => {
     blocks.push(<Block key={`bridge_block_${i}`} index={i} />);
     anchors.push(new Vec2(162.0 + (2.0 * i), -0.125));
   }
-  return <Joint type="revolute" anchors={anchors}>{blocks}</Joint>;
+  return (
+    <Joint type="revolute" anchors={anchors}>
+      {blocks}
+    </Joint>
+  );
 };

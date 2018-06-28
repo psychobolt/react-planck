@@ -13,7 +13,9 @@ export default props => {
         type="dynamic"
         linearVelocity={new Vec2(0.0, -50.0)}
       >
-        <Fixture density={1.0} render={{ stroke: 'red' }}><Shape center={new Vec2(0.0, 4.0 + (3.0 * i))} /></Fixture>
+        <Fixture density={1.0} render={{ stroke: 'red' }}>
+          <Shape center={new Vec2(0.0, 4.0 + (3.0 * i))} />
+        </Fixture>
       </Body>
     ));
   }

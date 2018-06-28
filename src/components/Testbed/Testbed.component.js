@@ -8,8 +8,8 @@ import testbed from './testbed';
 export type PropsWithStage = (stage: Stage) => {}
 
 export type Props = {
-  width: string | number,
-  height: string | number,
+  width?: string | number,
+  height?: string | number,
   world: World,
 }
 
@@ -42,7 +42,8 @@ export default class Testbed extends React.Component<Props> {
       if (this.canvas) {
         this.resize(this.canvas, this.config);
       }
-      return this.props.world;
+      const { world } = this.props;
+      return world;
     });
   }
 
@@ -84,6 +85,7 @@ export default class Testbed extends React.Component<Props> {
   }
 
   canvas: ?HTMLCanvasElement
+
   config: ?Config;
 
   render() {

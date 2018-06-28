@@ -29,7 +29,9 @@ export default ({ viewProps }: Props) => {
     >
       {bodies}
       <Body type="dynamic" position={new Vec2(-40.0, 0.0)} bullet linearVelocity={new Vec2(100.0, 0.0)}>
-        <Fixture density={1.0}><Box hx={1.5} hy={1.5} /></Fixture>
+        <Fixture density={1.0}>
+          <Box hx={1.5} hy={1.5} />
+        </Fixture>
       </Body>
     </PlanckContainer>
   );

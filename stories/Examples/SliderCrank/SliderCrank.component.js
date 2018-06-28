@@ -15,7 +15,8 @@ export default class SliderCrank extends React.Component<Props> {
   }
 
   componentWillReceiveProps(props: Props) {
-    if (this.props.viewProps !== props.viewProps) {
+    const { viewProps } = this.props;
+    if (viewProps !== props.viewProps) {
       this.updateViewProps(props.viewProps);
     }
   }
@@ -44,7 +45,9 @@ export default class SliderCrank extends React.Component<Props> {
   }
 
   viewProps: ViewProps
+
   joint1: RevoluteJoint;
+
   joint2: PrismaticJoint;
 
   render() {
@@ -53,15 +56,35 @@ export default class SliderCrank extends React.Component<Props> {
         worldProps={new Vec2(0, -10)}
         viewProps={this.viewProps}
       >
-        <Body id="ground"><Fixture><Edge v1={new Vec2(-40.0, 0.0)} v2={new Vec2(40.0, 0.0)} /></Fixture></Body>
-        <Body id="crank" type="dynamic"><Fixture density={2.0}><Box hx={0.5} hy={2.0} center={new Vec2(0.0, 7.0)} /></Fixture></Body>
+        <Body id="ground">
+          <Fixture>
+            <Edge v1={new Vec2(-40.0, 0.0)} v2={new Vec2(40.0, 0.0)} />
+          </Fixture>
+        </Body>
+        <Body id="crank" type="dynamic">
+          <Fixture density={2.0}>
+            <Box hx={0.5} hy={2.0} center={new Vec2(0.0, 7.0)} />
+          </Fixture>
+        </Body>
         <Joint type="revolute" ref={this.setJoint1} motorSpeed={Math.PI} maxMotorTorque={10000.0} enableMotor bodyA="ground" bodyB="crank" anchors={[new Vec2(0.0, 5.0)]} />
-        <Body id="follower" type="dynamic"><Fixture density={2.0}><Box hx={0.5} hy={4.0} center={new Vec2(0.0, 13.0)} /></Fixture></Body>
+        <Body id="follower" type="dynamic">
+          <Fixture density={2.0}>
+            <Box hx={0.5} hy={4.0} center={new Vec2(0.0, 13.0)} />
+          </Fixture>
+        </Body>
         <Joint type="revolute" bodyA="crank" bodyB="follower" anchors={[new Vec2(0.0, 9.0)]} />
-        <Body id="piston" type="dynamic" fixedRotation><Fixture density={2.0}><Box hx={1.5} hy={1.5} center={new Vec2(0.0, 17.0)} /></Fixture></Body>
+        <Body id="piston" type="dynamic" fixedRotation>
+          <Fixture density={2.0}>
+            <Box hx={1.5} hy={1.5} center={new Vec2(0.0, 17.0)} />
+          </Fixture>
+        </Body>
         <Joint type="revolute" bodyA="follower" bodyB="piston" anchors={[new Vec2(0.0, 17.0)]} />
         <Joint type="prismatic" ref={this.setJoint2} maxMotorForce={1000.0} enableMotor bodyA="ground" bodyB="piston" anchors={[new Vec2(0.0, 17.0)]} axis={new Vec2(0.0, 1.0)} />
-        <Body type="dynamic"><Fixture density={2.0}><Box hx={1.5} hy={1.5} center={new Vec2(0.0, 23.0)} /></Fixture></Body>
+        <Body type="dynamic">
+          <Fixture density={2.0}>
+            <Box hx={1.5} hy={1.5} center={new Vec2(0.0, 23.0)} />
+          </Fixture>
+        </Body>
       </PlanckContainer>
     );
   }

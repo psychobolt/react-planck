@@ -9,7 +9,11 @@ import SliderCrank from './SliderCrank';
 import View from './shared/View';
 
 storiesOf('Examples', module)
-  .addDecorator(story => <View>{story()}</View>)
+  .addDecorator(story => (
+    <View>
+      {story()}
+    </View>
+  ))
   .add('8-Ball', () => <EightBall />)
   .add('Add Pair', () => <AddPair />)
   .add('Car', () => <Car />)

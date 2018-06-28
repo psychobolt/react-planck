@@ -43,13 +43,36 @@ export default ({ width, height, pocketRadius }: Props) => {
   ];
   return (
     <React.Fragment>
-      <Body><Fixture {...railProps}><Polygon vertices={railV.map(scale(+1, +1))} /></Fixture></Body>
-      <Body><Fixture {...railProps}><Polygon vertices={railV.map(scale(-1, +1))} /></Fixture></Body>
-
-      <Body><Fixture {...railProps}><Polygon vertices={railH.map(scale(+1, +1))} /></Fixture></Body>
-      <Body><Fixture {...railProps}><Polygon vertices={railH.map(scale(-1, +1))} /></Fixture></Body>
-      <Body><Fixture {...railProps}><Polygon vertices={railH.map(scale(+1, -1))} /></Fixture></Body>
-      <Body><Fixture {...railProps}><Polygon vertices={railH.map(scale(-1, -1))} /></Fixture></Body>
+      <Body>
+        <Fixture {...railProps}>
+          <Polygon vertices={railV.map(scale(+1, +1))} />
+        </Fixture>
+      </Body>
+      <Body>
+        <Fixture {...railProps}>
+          <Polygon vertices={railV.map(scale(-1, +1))} />
+        </Fixture>
+      </Body>
+      <Body>
+        <Fixture {...railProps}>
+          <Polygon vertices={railH.map(scale(+1, +1))} />
+        </Fixture>
+      </Body>
+      <Body>
+        <Fixture {...railProps}>
+          <Polygon vertices={railH.map(scale(-1, +1))} />
+        </Fixture>
+      </Body>
+      <Body>
+        <Fixture {...railProps}>
+          <Polygon vertices={railH.map(scale(+1, -1))} />
+        </Fixture>
+      </Body>
+      <Body>
+        <Fixture {...railProps}>
+          <Polygon vertices={railH.map(scale(-1, -1))} />
+        </Fixture>
+      </Body>
 
       <Body>
         <Fixture {...pocketProps}>

@@ -418,9 +418,9 @@ Viewer.prototype.renderWorld = function renderWorld() {
   const viewer = this;
 
   let reset = false;
-  if (this._options.speed !== this._testbed.speed ||
-    this._options.hz !== this._testbed.hz ||
-    this._options.ratio !== this._testbed.ratio) {
+  if (this._options.speed !== this._testbed.speed
+    || this._options.hz !== this._testbed.hz
+    || this._options.ratio !== this._testbed.ratio) {
     this.setOptions(this._testbed);
     reset = true;
   }

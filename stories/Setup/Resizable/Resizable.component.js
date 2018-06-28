@@ -6,8 +6,8 @@ import { Vec2 } from 'planck-js';
 import { PlanckContainer, Body, Fixture, Box } from 'src';
 
 type Props = {
-  width: string,
-  height: string,
+  width?: string,
+  height?: string,
   ratio: number
 }
 
@@ -37,6 +37,7 @@ export default class extends React.Component<Props, State> {
 
   render() {
     const { width, height } = this.state;
+    const { ratio } = this.props;
     return (
       <div style={{ width, height }}>
         <Resizable onResizeStop={this.onResizeStop}>
@@ -44,7 +45,7 @@ export default class extends React.Component<Props, State> {
             viewProps={{
               width,
               height,
-              pixelsPerMeter: this.props.ratio,
+              pixelsPerMeter: ratio,
               x: 0,
               y: 0,
             }}

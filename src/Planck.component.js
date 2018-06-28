@@ -44,10 +44,12 @@ export function updateProps(instance, updatePayload, type, oldProps, newProps) {
   if (type === CONSTANTS.Box) {
     Object.assign(instance, TYPES[CONSTANTS.Box](newProps));
     return;
-  } else if (type === CONSTANTS.Polygon) {
+  }
+  if (type === CONSTANTS.Polygon) {
     Object.assign(instance, TYPES[CONSTANTS.Polygon](newProps));
     return;
-  } else if (type === CONSTANTS.Body) {
+  }
+  if (type === CONSTANTS.Body) {
     instance.update(mapIdToUserData(newProps));
   } else if (type === CONSTANTS.Fixture) {
     instance.update(mapIdToUserData(newProps));
@@ -137,8 +139,8 @@ export function updateProps(instance, updatePayload, type, oldProps, newProps) {
         instance.instances.forEach(joint => {
           Object.assign(joint, { m_bodyA: body });
           joint.getLocalAnchorA()
-            .set(instance.def.localAnchorA ||
-                 body.getLocalPoint(instance.anchors[0] || joint.getBodyB().getPosition()));
+            .set(instance.def.localAnchorA
+              || body.getLocalPoint(instance.anchors[0] || joint.getBodyB().getPosition()));
           if (instance.type === JointTypes.WHEEL || instance.type === JointTypes.PRISMATIC) {
             joint.getLocalAxisA()
               .set(instance.def.localAxisA || body.getLocalVector(instance.axis));
@@ -157,8 +159,8 @@ export function updateProps(instance, updatePayload, type, oldProps, newProps) {
           Object.assign(joint, { m_bodyB: body });
           if (instance.type === JointTypes.WHEEL || instance.type === JointTypes.PRISMATIC) {
             joint.getLocalAnchorB()
-              .set(instance.def.localAnchorB ||
-                   body.getLocalPoint(instance.anchors[0] || body.getPosition()));
+              .set(instance.def.localAnchorB
+                || body.getLocalPoint(instance.anchors[0] || body.getPosition()));
           }
           if (instance.type === JointTypes.REVOLUTE || instance.type === JointTypes.PRISMATIC) {
             Object.assign(joint, {

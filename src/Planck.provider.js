@@ -3,7 +3,7 @@ import React from 'react';
 import typeof { World } from 'planck-js';
 
 import PlanckRenderer from './Planck.renderer';
-import { Canvas, type Props as ChildProps, type ViewProps } from './Planck.container';
+import { Canvas, type Props as ChildProps, type ViewProps } from './Planck.container'; // eslint-disable-line import/no-cycle
 import { CONSTANTS } from './Planck.types';
 
 export const Context = React.createContext();
@@ -29,10 +29,12 @@ export default class PlanckProvider extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
     const Renderer = props.renderer;
+    const { worldProps } = this.props;
     this.renderer = new Renderer();
     this.state = {
-      world: this.renderer.createInstance(CONSTANTS.World, this.props.worldProps),
-      mergeProps: props.mergeProps || (mergeProps => this.setState(mergeProps(this.state, props))),
+      world: this.renderer.createInstance(CONSTANTS.World, worldProps),
+      mergeProps: props.mergeProps
+        || (mergeProps => this.setState(state => mergeProps(state, props))),
     };
   }
 
@@ -42,7 +44,9 @@ export default class PlanckProvider extends React.Component<Props, State> {
     const { innerRef, children, ...rest } = this.props;
     return (
       <Canvas {...rest} {...this.state} ref={innerRef} renderer={this.renderer}>
-        <Context.Provider value={this.state}>{children}</Context.Provider>
+        <Context.Provider value={this.state}>
+          {children}
+        </Context.Provider>
       </Canvas>
     );
   }

@@ -4,7 +4,7 @@ import { World } from 'planck-js';
 
 import { diffProps, updateProps } from './Planck.component';
 import PlanckRenderer from './Planck.renderer';
-import PlanckProvider from './Planck.provider';
+import PlanckProvider from './Planck.provider'; // eslint-disable-line import/no-cycle
 import { CONSTANTS } from './Planck.types';
 import Testbed, { type Props as TestbedProps, type PropsWithStage } from './components/Testbed';
 
@@ -13,10 +13,10 @@ export type ViewProps = TestbedProps | PropsWithStage;
 export type Props = {
   world: typeof World,
   worldProps: {},
-  view: ComponentType<any>,
+  view?: ComponentType<any>,
   viewProps: ViewProps,
   renderer: typeof PlanckRenderer,
-  children: Node,
+  children?: Node,
 };
 
 export class Canvas extends React.Component<Props> {
@@ -36,22 +36,24 @@ export class Canvas extends React.Component<Props> {
     this.update();
   }
 
-  componentDidUpdate({ worldProps }: Props) {
-    const updatePayload = diffProps(worldProps, this.props.worldProps);
+  componentDidUpdate(props: Props) {
+    const { world, worldProps } = this.props;
+    const updatePayload = diffProps(props.worldProps, worldProps);
     if (updatePayload && updatePayload.length) {
       updateProps(
-        this.props.world,
+        world,
         updatePayload,
         CONSTANTS.World,
+        props.worldProps,
         worldProps,
-        this.props.worldProps,
       );
     }
     this.update();
   }
 
   componentWillUnmount() {
-    this.props.renderer.reconciler.updateContainer(null, this.mountNode, this);
+    const { renderer } = this.props;
+    renderer.reconciler.updateContainer(null, this.mountNode, this);
   }
 
   update = () => {
@@ -62,12 +64,13 @@ export class Canvas extends React.Component<Props> {
   mountNode: Object;
 
   render() {
-    const { view: View, viewProps } = this.props;
+    const { view: View, viewProps, world } = this.props;
+    if (!View) return null;
     if (View === Testbed) {
       const props = typeof viewProps === 'function' ? { getTestbedProps: viewProps } : viewProps;
-      return <View {...props} world={this.props.world} />;
+      return <View {...props} world={world} />;
     }
-    return <View {...viewProps} world={this.props.world} />;
+    return <View {...viewProps} world={world} />;
   }
 }
 

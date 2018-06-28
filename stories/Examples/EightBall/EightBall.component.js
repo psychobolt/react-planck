@@ -18,11 +18,13 @@ const BALL_R = 0.12;
 
 class EightBall extends React.Component<Props> {
   componentDidMount() {
-    this.props.world.on('post-solve', this.pocketBall);
+    const { world } = this.props;
+    world.on('post-solve', this.pocketBall);
   }
 
   componentWillUnmount() {
-    this.props.world.off('post-solve', this.pocketBall);
+    const { world } = this.props;
+    world.off('post-solve', this.pocketBall);
   }
 
   pocketBall = (contact: Contact) => {
@@ -30,13 +32,14 @@ class EightBall extends React.Component<Props> {
     const bA = fA.getBody();
     const fB = contact.getFixtureB();
     const bB = fB.getBody();
-    const pocket = (fA.getUserData() === pocketProps.userData && bA) ||
-                   (fB.getUserData() === pocketProps.userData && bB);
-    const ball = (fA.getUserData() === ballFixProps.userData && bA) ||
-                  (fB.getUserData() === ballFixProps.userData && bB);
+    const pocket = (fA.getUserData() === pocketProps.userData && bA)
+                    || (fB.getUserData() === pocketProps.userData && bB);
+    const ball = (fA.getUserData() === ballFixProps.userData && bA)
+                  || (fB.getUserData() === ballFixProps.userData && bB);
     setTimeout(() => {
       if (pocket && ball) {
-        this.props.world.destroyBody(ball);
+        const { world } = this.props;
+        world.destroyBody(ball);
       }
     }, 1);
   }
@@ -63,8 +66,8 @@ type ContainerProps = {
   viewProps: ViewProps
 }
 
-export default (props: ContainerProps) => (
-  <PlanckContainer {...props} viewProps={getViewProps(props.viewProps)}>
+export default ({ viewProps, ...rest }: ContainerProps) => (
+  <PlanckContainer {...rest} viewProps={getViewProps(viewProps)}>
     <Context.Consumer>
       {({ world }) => <EightBall world={world} />}
     </Context.Consumer>

@@ -40,18 +40,21 @@ export default class View extends React.Component<Props, State> {
   });
 
   planckProps: any
+
   testbed: any
 
   render() {
+    const { children } = this.props;
+    const { key, paused } = this.state;
     return (
       <React.Fragment>
         <Playbar
           togglePause={this.togglePause}
-          paused={this.state.paused}
+          paused={paused}
           reset={this.reset}
         />
-        {React.Children.map(this.props.children, child =>
-          React.cloneElement(child, Object.assign(this.planckProps, { key: this.state.key })))}
+        {React.Children.map(children, child => React.cloneElement(child,
+          Object.assign(this.planckProps, { key })))}
       </React.Fragment>
     );
   }
