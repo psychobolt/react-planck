@@ -4,7 +4,7 @@ import { World } from 'planck-js';
 
 import { diffProps, updateProps } from './Planck.component';
 import PlanckRenderer from './Planck.renderer';
-import PlanckProvider from './Planck.provider'; // eslint-disable-line import/no-cycle
+import PlanckProvider from './Planck.provider'; // eslint-disable-line no-unused-vars
 import { CONSTANTS } from './Planck.types';
 import Testbed, { type Props as TestbedProps, type PropsWithStage } from './components/Testbed';
 
@@ -19,7 +19,9 @@ export type Props = {
   children?: Node,
 };
 
-export class Canvas extends React.Component<Props> {
+// $FlowFixMe
+@PlanckProvider
+class PlanckContainer extends React.Component<Props> {
   static defaultProps = {
     testbedProps: {},
     view: Testbed,
@@ -76,5 +78,5 @@ export class Canvas extends React.Component<Props> {
 
 // $FlowFixMe
 export default React.forwardRef((props, ref) => (
-  <PlanckProvider {...props} innerRef={ref} />
+  <PlanckContainer {...props} innerRef={ref} />
 ));

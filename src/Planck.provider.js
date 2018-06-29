@@ -1,26 +1,26 @@
 // @flow
-import React from 'react';
+import * as React from 'react';
 import typeof { World } from 'planck-js';
 
 import PlanckRenderer from './Planck.renderer';
-import { Canvas, type Props as ChildProps, type ViewProps } from './Planck.container'; // eslint-disable-line import/no-cycle
 import { CONSTANTS } from './Planck.types';
 
 export const Context = React.createContext();
 
 type Props = {
   worldProps: {},
-  viewProps: ViewProps,
   innerRef: Object,
   renderer: PlanckRenderer,
-  mergeProps: () => any
-} & ChildProps;
+  mergeProps: () => any,
+  children: React.Node
+};
 
 type State = {
   world: World,
 };
 
-export default class PlanckProvider extends React.Component<Props, State> {
+export default (Container: React.ComponentType<any>) => class PlanckProvider
+  extends React.Component<Props, State> {
   static defaultProps = {
     worldProps: {},
     renderer: PlanckRenderer,
@@ -43,11 +43,11 @@ export default class PlanckProvider extends React.Component<Props, State> {
   render() {
     const { innerRef, children, ...rest } = this.props;
     return (
-      <Canvas {...rest} {...this.state} ref={innerRef} renderer={this.renderer}>
+      <Container {...rest} {...this.state} ref={innerRef} renderer={this.renderer}>
         <Context.Provider value={this.state}>
           {children}
         </Context.Provider>
-      </Canvas>
+      </Container>
     );
   }
-}
+};
