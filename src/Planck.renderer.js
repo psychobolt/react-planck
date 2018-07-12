@@ -72,7 +72,6 @@ const defaultHostConfig = {
   },
   resetAfterCommit() {
   },
-  useSyncScheduling: true,
   now: Date.now,
   supportsMutation: true,
   commitUpdate(instance, updatePayload, type, oldProps, newProps, internalInstanceHandle) {
