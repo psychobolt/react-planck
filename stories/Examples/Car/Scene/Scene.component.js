@@ -2,7 +2,7 @@
 import React from 'react';
 import { Vec2 } from 'planck-js';
 
-import { type ViewProps, PlanckContainer, Body, Joint, Fixture, Box } from 'src';
+import { type ViewProps, PlanckContainer, Body, Joint, Fixture, Box } from 'dist';
 import Ground from '../Ground';
 import Teeter from '../Teeter';
 import Bridge from '../Bridge';

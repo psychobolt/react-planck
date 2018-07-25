@@ -2,7 +2,7 @@
 import React from 'react';
 import { Vec2, Math } from 'planck-js';
 
-import { type ViewProps, PlanckContainer, Body, Fixture, Circle, Box } from 'src';
+import { type ViewProps, PlanckContainer, Body, Fixture, Circle, Box } from 'dist';
 
 type Props = {
   viewProps: ViewProps

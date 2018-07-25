@@ -3,7 +3,7 @@ import React from 'react';
 import typeof Stage from 'stage-js';
 import { Vec2, typeof Body as PlBody, typeof WheelJoint as PlWheelJoint } from 'planck-js';
 
-import { Body, Joint, Fixture, Circle, Polygon } from 'src';
+import { Body, Joint, Fixture, Circle, Polygon } from 'dist';
 
 const ZETA = 0.7;
 const SPEED = 50.0;

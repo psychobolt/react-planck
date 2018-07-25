@@ -1,7 +1,7 @@
 import React from 'react';
 import { Vec2 } from 'planck-js';
 
-import { Body, Fixture, Edge } from 'src';
+import { Body, Fixture, Edge } from 'dist';
 
 const groundFD = {
   density: 0.0,

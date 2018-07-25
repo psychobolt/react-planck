@@ -2,7 +2,7 @@
 import React from 'react';
 import { Vec2, Math } from 'planck-js';
 
-import { Body, Fixture, Circle } from 'src';
+import { Body, Fixture, Circle } from 'dist';
 
 const SPI3 = Math.sin(Math.PI / 3);
 const BLACK = { fill: 'black', stroke: 'white' };

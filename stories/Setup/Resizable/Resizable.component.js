@@ -3,7 +3,7 @@ import React from 'react';
 import Resizable from 're-resizable';
 import { Vec2 } from 'planck-js';
 
-import { PlanckContainer, Body, Fixture, Box } from 'src';
+import { PlanckContainer, Body, Fixture, Box } from 'dist';
 
 type Props = {
   width?: string,

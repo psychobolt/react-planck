@@ -1,7 +1,7 @@
 import React from 'react';
 import { Vec2 } from 'planck-js';
 
-import { PlanckContainer, Body, Fixture, Edge, Circle } from 'src';
+import { PlanckContainer, Body, Fixture, Edge, Circle } from 'dist';
 
 export default props => {
   const bodies = [];

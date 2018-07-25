@@ -2,7 +2,7 @@
 import React from 'react';
 import { Vec2, type RevoluteJoint, type PrismaticJoint } from 'planck-js';
 
-import { type ViewProps, PlanckContainer, Body, Fixture, Box, Edge, Joint } from 'src';
+import { type ViewProps, PlanckContainer, Body, Fixture, Box, Edge, Joint } from 'dist';
 
 type Props = {
   viewProps: ViewProps
