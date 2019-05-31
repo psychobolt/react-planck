@@ -1,16 +1,30 @@
+import path from 'path';
 import { minify } from 'uglify-es';
+import postcss from 'rollup-plugin-postcss';
 import { uglify } from 'rollup-plugin-uglify';
 
-import config, { plugins } from './rollup.config.common';
+import { configs } from './rollup.config.common';
 
-export default {
-  ...config,
-  output: {
-    file: 'dist/index.prod.js',
-    format: 'cjs',
-    exports: 'named',
-  },
-  plugins: plugins.concat([
-    uglify({}, minify),
-  ]),
-};
+function getConfig(pathname, base) {
+  const dist = path.resolve(pathname, 'dist');
+  return {
+    ...base,
+    output: {
+      dir: dist,
+      entryFileNames: '[name].prod.js',
+      chunkFileNames: '[name]-[hash].prod.js',
+      format: 'cjs',
+      exports: 'named',
+    },
+    plugins: [
+      ...base.plugins,
+      postcss({
+        extract: path.resolve(dist, 'styles.prod.css'),
+        minimize: true,
+      }),
+      uglify({}, minify),
+    ],
+  };
+}
+
+export default configs.map(([pathname, config]) => getConfig(pathname, config));

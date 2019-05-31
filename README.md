@@ -22,6 +22,4 @@ or
 yarn add react-paperjs
 ```
 
-## Usage
-
-Coming soon. See [examples](stories/Examples) if you like to try it out yourself.
+See [examples](stories/Examples) if you like to try it out yourself.
