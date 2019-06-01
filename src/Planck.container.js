@@ -13,6 +13,7 @@ export type ViewProps = TestbedProps | PropsWithStage;
 export type Props = {
   world: typeof World,
   worldProps: {},
+  testbedProps?: {},
   view?: ComponentType<any>,
   viewProps: ViewProps,
   renderer: typeof PlanckRenderer,
@@ -27,6 +28,8 @@ class PlanckContainer extends React.Component<Props> {
     view: Testbed,
     children: null,
   };
+
+  mountNode: Object;
 
   constructor(props: Props) {
     super(props);
@@ -62,8 +65,6 @@ class PlanckContainer extends React.Component<Props> {
     const { renderer, children } = this.props;
     renderer.reconciler.updateContainer(children, this.mountNode, this);
   };
-
-  mountNode: Object;
 
   render() {
     const { view: View, viewProps, world } = this.props;

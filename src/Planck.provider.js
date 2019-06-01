@@ -8,9 +8,9 @@ import { CONSTANTS } from './Planck.types';
 export const Context = React.createContext();
 
 type Props = {
-  worldProps: {},
+  worldProps?: {},
   innerRef: Object,
-  renderer: PlanckRenderer,
+  renderer?: PlanckRenderer,
   mergeProps: () => any,
   children: React.Node
 };
