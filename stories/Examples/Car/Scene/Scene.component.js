@@ -2,14 +2,15 @@
 import React from 'react';
 import { Vec2 } from 'planck-js';
 
-import { type ViewProps, PlanckContainer, Body, Joint, Fixture, Box } from 'dist';
+import { type ViewProps, PlanckContainer, Body, Joint, Fixture, Box } from 'react-planck';
 import Ground from '../Ground';
 import Teeter from '../Teeter';
 import Bridge from '../Bridge';
 import Car from '../Car.component';
 
 type Props = {
-  viewProps?: ViewProps
+  viewProps?: ViewProps,
+  worldProps?: {}
 }
 
 type State = {
@@ -17,7 +18,7 @@ type State = {
 }
 
 export default class Scene extends React.Component<Props, State> {
-  car = null;
+  car: Car;
 
   static defaultProps = {
     viewProps: {},
@@ -38,7 +39,7 @@ export default class Scene extends React.Component<Props, State> {
 
   start() {
     this.setState({
-      started: this.car != null,
+      started: this.car !== undefined,
     });
   }
 

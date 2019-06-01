@@ -13,6 +13,10 @@ type State = {
 }
 
 export default class View extends React.Component<Props, State> {
+  planckProps: any
+
+  testbed: any
+
   constructor(props: Props) {
     super(props);
     this.state = {
@@ -38,10 +42,6 @@ export default class View extends React.Component<Props, State> {
     key: `child_${new Date().getTime()}`,
     paused: false,
   });
-
-  planckProps: any
-
-  testbed: any
 
   render() {
     const { children } = this.props;

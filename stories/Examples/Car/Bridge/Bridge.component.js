@@ -2,7 +2,7 @@
 import React from 'react';
 import { Vec2 } from 'planck-js';
 
-import { Joint } from 'dist';
+import { Joint } from 'react-planck';
 import Block from './Block';
 
 export default () => {

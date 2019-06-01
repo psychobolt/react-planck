@@ -2,7 +2,7 @@
 import React from 'react';
 import { Vec2, Math } from 'planck-js';
 
-import { Body, Fixture, Circle } from 'dist';
+import { Body, Fixture, Circle } from 'react-planck';
 
 const SPI3 = Math.sin(Math.PI / 3);
 const BLACK = { fill: 'black', stroke: 'white' };
@@ -36,7 +36,14 @@ const ballBodyProps = {
   angularDamping: 1,
 };
 
-const rack = r => {
+type Ball = {
+  x?: number,
+  y?: number,
+  center?: Vec2,
+  render?: Function
+};
+
+const rack: number => Ball[] = r => {
   const n = 5;
   const balls = [];
   const d = 2 * r;
@@ -60,7 +67,7 @@ type Props = {
 }
 
 export default ({ offset, ballRadius }: Props) => {
-  const balls = rack(ballRadius).map(v => ({ center: translate(offset)(v) }));
+  const balls: Ball[] = rack(ballRadius).map(v => ({ center: translate(offset)(v) }));
   balls.push({ center: new Vec2(-offset.x, 0) });
   COLORS.forEach((color, i) => Object.assign(balls[i], { render: color }));
   balls[14].render = balls[4].render;

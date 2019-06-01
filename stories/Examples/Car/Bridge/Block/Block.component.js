@@ -2,7 +2,7 @@
 import React from 'react';
 import { Vec2 } from 'planck-js';
 
-import { Body, Fixture, Box } from 'dist';
+import { Body, Fixture, Box } from 'react-planck';
 
 type Props = {
   index: number,

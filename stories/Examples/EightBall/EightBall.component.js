@@ -2,7 +2,7 @@
 import React from 'react';
 import { Vec2, World, type Contact } from 'planck-js';
 
-import { type ViewProps, PlanckContainer, Context } from 'dist';
+import { type ViewProps, PlanckContainer, Context } from 'react-planck';
 
 import Table, { pocketProps } from './Table';
 import Rack, { ballFixProps } from './Rack';

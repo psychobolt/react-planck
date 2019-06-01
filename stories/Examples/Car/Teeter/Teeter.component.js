@@ -2,18 +2,18 @@
 import React from 'react';
 import { Vec2, typeof Body as PlBody } from 'planck-js';
 
-import { Body, Fixture, Box } from 'dist';
+import { Body, Fixture, Box } from 'react-planck';
 
 type Props = {};
 
 export default class extends React.Component<Props> {
+  teeter: PlBody;
+
   componentDidMount() {
     this.teeter.applyAngularImpulse(100.0, true);
   }
 
   setTeeter = (ref: PlBody) => { this.teeter = ref; }
-
-  teeter: PlBody;
 
   render() {
     return (

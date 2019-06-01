@@ -3,7 +3,11 @@ module.system.node.resolve_dirname=node_modules
 module.system.node.resolve_dirname=packages/default-export/node_modules
 module.system.node.resolve_dirname=src
 esproposal.optional_chaining=enable
+module.name_mapper='^react-planck$' -> '<PROJECT_ROOT>/src/index.js'
 include_warnings=true
 
 [lints]
 deprecated-utility=warn
+
+[untyped]
+.*/re-resizable/lib/index.es5.js.flow

@@ -3,7 +3,7 @@ import React from 'react';
 import Resizable from 're-resizable';
 import { Vec2 } from 'planck-js';
 
-import { PlanckContainer, Body, Fixture, Box } from 'dist';
+import { PlanckContainer, Body, Fixture, Box } from 'react-planck';
 
 type Props = {
   width?: string,
@@ -12,8 +12,8 @@ type Props = {
 }
 
 type State = {
-  width: string,
-  height: string,
+  width?: string,
+  height?: string,
 }
 
 export default class extends React.Component<Props, State> {

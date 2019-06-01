@@ -10,6 +10,7 @@ export type PropsWithStage = (stage: Stage) => {}
 export type Props = {
   width?: string | number,
   height?: string | number,
+  pixelsPerMeter?: number, // eslint-disable-line react/no-unused-prop-types
   world: World,
 }
 
@@ -34,6 +35,10 @@ export default class Testbed extends React.Component<Props> {
     height: '480px',
     pixelsPerMeter: 10,
   }
+
+  canvas: ?HTMLCanvasElement
+
+  config: ?Config;
 
   componentDidMount() {
     testbed(config => {
@@ -83,10 +88,6 @@ export default class Testbed extends React.Component<Props> {
       height: clientHeight / pixelsPerMeter,
     });
   }
-
-  canvas: ?HTMLCanvasElement
-
-  config: ?Config;
 
   render() {
     const { width, height } = getProps(this.props, this.config || {});

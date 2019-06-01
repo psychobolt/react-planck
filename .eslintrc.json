@@ -23,7 +23,11 @@
     },
     "settings": {
         "import/resolver": {
-            "babel-module": {}
+            "babel-module": {
+                "alias": {
+                    "react-planck": "./src/index.js"
+                }
+            }
         }
     }
 }

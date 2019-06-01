@@ -2,6 +2,12 @@ const path = require('path');
 
 module.exports = ({ config }) => ({
   ...config,
+  resolve: {
+    ...config.resolve,
+    alias: {
+      'react-planck': path.resolve(__dirname, '../dist'),
+    },
+  },
   module: {
     ...config.module,
     rules: [

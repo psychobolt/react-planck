@@ -2,7 +2,7 @@
 import React from 'react';
 import { Vec2 } from 'planck-js';
 
-import { Body, Fixture, Circle, Polygon } from 'dist';
+import { Body, Fixture, Circle, Polygon } from 'react-planck';
 
 const scale = (x = 1, y = 1) => v => new Vec2(v.x * x, v.y * y);
 

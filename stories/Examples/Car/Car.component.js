@@ -3,7 +3,7 @@ import React from 'react';
 import typeof Stage from 'stage-js';
 import { Vec2, typeof Body as PlBody, typeof WheelJoint as PlWheelJoint } from 'planck-js';
 
-import { Body, Joint, Fixture, Circle, Polygon } from 'dist';
+import { Body, Joint, Fixture, Circle, Polygon } from 'react-planck';
 
 const ZETA = 0.7;
 const SPEED = 50.0;
@@ -17,6 +17,12 @@ type State = {
 };
 
 export default class Car extends React.Component<Props, State> {
+  car: PlBody
+
+  springBack: PlWheelJoint
+
+  springFront: PlWheelJoint
+
   HZ = 4.0
 
   state = {
@@ -91,12 +97,6 @@ export default class Car extends React.Component<Props, State> {
   }
 
   setCar = (ref: PlBody) => { this.car = ref; }
-
-  car: PlBody
-
-  springBack: PlWheelJoint
-
-  springFront: PlWheelJoint
 
   render() {
     const { speed, enableSpringBackMotor, hz } = this.state;

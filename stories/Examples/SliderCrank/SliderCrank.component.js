@@ -2,13 +2,19 @@
 import React from 'react';
 import { Vec2, type RevoluteJoint, type PrismaticJoint } from 'planck-js';
 
-import { type ViewProps, PlanckContainer, Body, Fixture, Box, Edge, Joint } from 'dist';
+import { type ViewProps, PlanckContainer, Body, Fixture, Box, Edge, Joint } from 'react-planck';
 
 type Props = {
   viewProps: ViewProps
 }
 
 export default class SliderCrank extends React.Component<Props> {
+  viewProps: ViewProps
+
+  joint1: RevoluteJoint;
+
+  joint2: PrismaticJoint;
+
   constructor(props: Props) {
     super(props);
     this.updateViewProps(props.viewProps);
@@ -43,12 +49,6 @@ export default class SliderCrank extends React.Component<Props> {
       },
     });
   }
-
-  viewProps: ViewProps
-
-  joint1: RevoluteJoint;
-
-  joint2: PrismaticJoint;
 
   render() {
     return (
