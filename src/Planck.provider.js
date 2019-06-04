@@ -5,8 +5,6 @@ import typeof { World } from 'planck-js';
 import PlanckRenderer from './Planck.renderer';
 import { CONSTANTS } from './Planck.types';
 
-export const Context = React.createContext();
-
 type Props = {
   worldProps?: {},
   innerRef: Object,
@@ -19,6 +17,8 @@ type State = {
   world: World,
 };
 
+export const Context = React.createContext<State>({});
+
 export default (Container: React.ComponentType<any>) => class PlanckProvider
   extends React.Component<Props, State> {
   static defaultProps = {
@@ -28,8 +28,7 @@ export default (Container: React.ComponentType<any>) => class PlanckProvider
 
   constructor(props: Props) {
     super(props);
-    const Renderer = props.renderer;
-    const { worldProps } = this.props;
+    const { worldProps, renderer: Renderer = PlanckRenderer } = this.props;
     this.renderer = new Renderer();
     this.state = {
       world: this.renderer.createInstance(CONSTANTS.World, worldProps),

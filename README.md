@@ -15,11 +15,13 @@ React fiber renderer and component container for [Planck.js](http://piqnt.com/pl
 
 ## Install
 
-Recommended: Planck JS 0.1.x, React, React DOM 16.x.
+Recommended: Planck JS 0.3.x, React 16.x, React DOM 16.x.
 ```sh
 npm install --save react-planck
 or
-yarn add react-paperjs
+yarn add react-planck
 ```
+
+> You may optionally install Stage JS 0.8.x to utilize the default testbed.
 
 See [examples](stories/Examples) if you like to try it out yourself.

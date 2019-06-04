@@ -1,23 +1,26 @@
 // @flow
-import React, { type Node, type ComponentType } from 'react';
-import { World } from 'planck-js';
+import * as React from 'react';
+import typeof { World } from 'planck-js';
 
 import { diffProps, updateProps } from './Planck.component';
 import PlanckRenderer from './Planck.renderer';
 import PlanckProvider from './Planck.provider'; // eslint-disable-line no-unused-vars
 import { CONSTANTS } from './Planck.types';
-import Testbed, { type Props as TestbedProps, type PropsWithStage } from './components/Testbed';
+import type { Props as TestbedProps, PropsWithStage } from './components/Testbed';
+
+const Testbed = React.lazy(() => import('./components/Testbed'));
+const { Suspense } = React;
 
 export type ViewProps = TestbedProps | PropsWithStage;
 
 export type Props = {
-  world: typeof World,
+  world: World,
   worldProps: {},
   testbedProps?: {},
-  view?: ComponentType<any>,
+  view?: React.ComponentType<any>,
   viewProps: ViewProps,
   renderer: typeof PlanckRenderer,
-  children?: Node,
+  children?: React.Node,
 };
 
 // $FlowFixMe
@@ -71,13 +74,12 @@ class PlanckContainer extends React.Component<Props> {
     if (!View) return null;
     if (View === Testbed) {
       const props = typeof viewProps === 'function' ? { getTestbedProps: viewProps } : viewProps;
-      return <View {...props} world={world} />;
+      return (<Suspense fallback={<div />}><View {...props} world={world} /></Suspense>);
     }
     return <View {...viewProps} world={world} />;
   }
 }
 
-// $FlowFixMe
 export default React.forwardRef((props, ref) => (
   <PlanckContainer {...props} innerRef={ref} />
 ));

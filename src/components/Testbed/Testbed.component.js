@@ -1,7 +1,7 @@
 // @flow
 import React from 'react';
 import typeof Stage from 'stage-js';
-import type { World } from 'planck-js';
+import typeof { World } from 'planck-js';
 
 import testbed from './testbed';
 

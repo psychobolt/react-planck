@@ -110,7 +110,7 @@
     "react-is": "^16.8.6"
   },
   "peerDependencies": {
-    "planck-js": "^0.1.44",
+    "planck-js": "^0.3.5",
     "react": "^16.8.6",
     "react-dom": "^16.8.6"
   }
