@@ -1,6 +1,6 @@
 // @flow
 import React from 'react';
-import Resizable from 're-resizable';
+import { Resizable } from 're-resizable';
 import { Vec2 } from 'planck-js';
 
 import { PlanckContainer, Body, Fixture, Box } from 'react-planck';
