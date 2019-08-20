@@ -72,7 +72,6 @@ class PlanckContainer extends React.Component<Props> {
   render() {
     const { view: View, viewProps, world } = this.props;
     if (!View) return null;
-    
     const props = typeof viewProps === 'function' ? { getTestbedProps: viewProps } : viewProps;
     if (View === Testbed) {
       return (<Suspense fallback={<div />}><View {...props} world={world} /></Suspense>);
