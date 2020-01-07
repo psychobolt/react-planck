@@ -242,7 +242,7 @@ export default (opts, callback) => {
         if (shape) {
           return null;
         }
-        if (!fixture.getBody().isDynamic() || !fixture.testPoint(point)) {
+        if (!fixture.testPoint(point)) {
           return null;
         }
         shape = fixture;
@@ -278,20 +278,26 @@ export default (opts, callback) => {
         }
 
         const fixture = findFixture(point);
+        if (testbed.onMouseDown) {
+          testbed.onMouseDown(fixture);
+        }
+
         if (!fixture) {
           return;
         }
 
-        if (testbed.mouseForce) {
-          targetFixture = fixture;
-        } else {
-          mouseJoint = planck.MouseJoint(
-            { maxForce: 1000 },
-            mouseGround,
-            fixture.getBody(),
-            Vec2(point),
-          );
-          world.createJoint(mouseJoint);
+        if (fixture.getBody().isDynamic()) {
+          if (testbed.mouseForce) {
+            targetFixture = fixture;
+          } else {
+            mouseJoint = planck.MouseJoint(
+              { maxForce: 1000 },
+              mouseGround,
+              fixture.getBody(),
+              Vec2(point),
+            );
+            world.createJoint(mouseJoint);
+          }
         }
       })
       .on(Stage.Mouse.MOVE, point => {
@@ -309,6 +315,11 @@ export default (opts, callback) => {
           world.destroyJoint(mouseJoint);
           mouseJoint = null;
         }
+
+        if (testbed.onMouseUp) {
+          testbed.onMouseUp();
+        }
+
         if (targetFixture) {
           const targetBody = targetFixture.getBody();
           const force = Vec2.sub(point, getFixturePosition(targetFixture));

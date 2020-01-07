@@ -35,6 +35,14 @@ export default class extends React.Component<Props, State> {
     });
   }
 
+  onMouseDown = (fixture: any) => {
+    if (fixture) {
+      console.log(`Body ${fixture.getBody().getUserData().$$id} is selected!`); // eslint-disable-line no-console
+    }
+  }
+
+  onMouseUp = () => console.log('Nothing is selected!'); // eslint-disable-line no-console
+
   render() {
     const { width, height } = this.state;
     const { ratio } = this.props;
@@ -46,11 +54,13 @@ export default class extends React.Component<Props, State> {
               width,
               height,
               pixelsPerMeter: ratio,
+              onMouseDown: this.onMouseDown,
+              onMouseUp: this.onMouseUp,
               x: 0,
               y: 0,
             }}
           >
-            <Body>
+            <Body id="box">
               <Fixture density={0.0}>
                 <Box position={new Vec2(0.0, 0.0)} hx={1.0} hy={1.0} />
               </Fixture>
