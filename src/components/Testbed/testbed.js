@@ -47,21 +47,13 @@ export default (opts, callback) => {
       stage.resume();
       testbed.focus();
     };
-    testbed.focus = () => {
-      if (document.activeElement) document.activeElement.blur();
-      canvas.focus();
-    };
-
-    testbed.focus = () => {
-      if (document.activeElement) document.activeElement.blur();
-      canvas.focus();
-    };
 
     testbed.debug = false;
     testbed.width = 80;
     testbed.height = 60;
     testbed.x = 0;
     testbed.y = -10;
+    testbed.scaleY = 1;
     testbed.ratio = 16;
     testbed.hz = 60;
     testbed.speed = 1;
@@ -110,7 +102,7 @@ export default (opts, callback) => {
 
       drawingTexture.draw = ctx => {
         ctx.save();
-        ctx.transform(1, 0, 0, -1, -testbed.x, -testbed.y);
+        ctx.transform(1, 0, 0, -testbed.scaleY, -testbed.x, -testbed.y);
         ctx.lineWidth = 2 / testbed.ratio;
         ctx.lineCap = 'round';
         for (let drawing = buffer.shift(); drawing; drawing = buffer.shift()) {
@@ -280,6 +272,7 @@ export default (opts, callback) => {
 
     viewer.attr('spy', true)
       .on(Stage.Mouse.START, point => {
+        point = { x: point.x, y: testbed.scaleY * point.y };
         if (targetFixture) {
           return;
         }
@@ -302,6 +295,7 @@ export default (opts, callback) => {
         }
       })
       .on(Stage.Mouse.MOVE, point => {
+        point = { x: point.x, y: testbed.scaleY * point.y };
         if (mouseJoint) {
           mouseJoint.setTarget(point);
         }
@@ -310,6 +304,7 @@ export default (opts, callback) => {
         mouseMove.y = point.y;
       })
       .on(Stage.Mouse.END, point => {
+        point = { x: point.x, y: testbed.scaleY * point.y };
         if (mouseJoint) {
           world.destroyJoint(mouseJoint);
           mouseJoint = null;
@@ -407,6 +402,7 @@ Viewer.prototype.setOptions = function setOptions(testbed) {
   if (Math.abs(this._options.hz) < 1) {
     this._options.hz = 1 / this._options.hz;
   }
+  this._options.scaleY = testbed.scaleY || 1;
   this._options.ratio = testbed.ratio || 16;
   this._options.lineWidth = 2 / this._options.ratio;
   this._timeStep = 1 / this._options.hz;
@@ -490,8 +486,8 @@ Viewer.prototype.renderWorld = function renderWorld() {
           f.ui.__lastX = p.x;
           f.ui.__lastY = p.y;
           f.ui.__lastR = r;
-          f.ui.offset(p.x, p.y);
-          f.ui.rotate(r);
+          f.ui.offset(p.x, this._options.scaleY * p.y);
+          f.ui.rotate(this._options.scaleY * r);
         }
       }
     }
@@ -525,9 +521,9 @@ Viewer.prototype.renderWorld = function renderWorld() {
 
     if (j.ui) {
       const cx = (a.x + b.x) * 0.5;
-      const cy = (a.y + b.y) * 0.5;
+      const cy = this._options.scaleY * (a.y + b.y) * 0.5;
       const dx = a.x - b.x;
-      const dy = a.y - b.y;
+      const dy = this._options.scaleY * (a.y - b.y);
       const d = Math.sqrt((dx * dx) + (dy * dy));
       j.ui.width(d);
       j.ui.rotate(Math.atan2(dy, dx));
@@ -561,8 +557,7 @@ Viewer.prototype.drawJoint = function drawJoint(joint, options) {
 };
 
 Viewer.prototype.drawCircle = function drawCircle(shape, options) {
-  const lw = options.lineWidth;
-  const { ratio } = options;
+  const { lineWidth: lw, ratio, scaleY } = options;
 
   const r = shape.m_radius;
   const cx = r + lw;
@@ -586,7 +581,7 @@ Viewer.prototype.drawCircle = function drawCircle(shape, options) {
   });
   const { x, y } = shape.m_p;
   const image = Stage.image(texture)
-    .offset(x - cx, y - cy);
+    .offset(x - cx, scaleY * y - cy);
   const node = Stage.create().append(image);
   node.__isEqualShape = function isEqual(other) {
     return Vec2.areEqual(new Vec2(x, y), other.m_p)
@@ -596,8 +591,7 @@ Viewer.prototype.drawCircle = function drawCircle(shape, options) {
 };
 
 Viewer.prototype.drawEdge = function drawEdge(edge, options) {
-  const lw = options.lineWidth;
-  const { ratio } = options;
+  const { lineWidth: lw, ratio, scaleY } = options;
 
   const v1 = edge.m_vertex1;
   const v2 = edge.m_vertex2;
@@ -626,10 +620,10 @@ Viewer.prototype.drawEdge = function drawEdge(edge, options) {
   const v2x = v2.x;
   const v2y = v2.y;
   const minX = Math.min(v1x, v2x);
-  const minY = Math.min(v1y, v2y);
+  const minY = Math.min(scaleY * v1y, scaleY * v2y);
 
   const image = Stage.image(texture);
-  image.rotate(Math.atan2(dy, dx));
+  image.rotate(scaleY * Math.atan2(dy, dx));
   image.offset(minX - lw, minY - lw);
   const node = Stage.create().append(image);
   node.__isEqualShape = function isEqual(other) {
@@ -640,8 +634,7 @@ Viewer.prototype.drawEdge = function drawEdge(edge, options) {
 };
 
 Viewer.prototype.drawPolygon = function drawPolygon(shape, options) {
-  const lw = options.lineWidth;
-  const { ratio } = options;
+  const { lineWidth: lw, ratio, scaleY } = options;
 
   const vertices = shape.m_vertices;
 
@@ -657,8 +650,8 @@ Viewer.prototype.drawPolygon = function drawPolygon(shape, options) {
     const v = vertices[i];
     minX = Math.min(minX, v.x);
     maxX = Math.max(maxX, v.x);
-    minY = Math.min(minY, v.y);
-    maxY = Math.max(maxY, v.y);
+    minY = Math.min(minY, scaleY * v.y);
+    maxY = Math.max(maxY, scaleY * v.y);
   }
 
   const width = maxX - minX;
@@ -672,7 +665,7 @@ Viewer.prototype.drawPolygon = function drawPolygon(shape, options) {
     for (let i = 0; i < vertices.length; i += 1) {
       const v = vertices[i];
       const x = (v.x - minX) + lw;
-      const y = (v.y - minY) + lw;
+      const y = (scaleY * v.y - minY) + lw;
       if (i === 0) ctx.moveTo(x, y);
       else ctx.lineTo(x, y);
     }
@@ -706,7 +699,7 @@ Viewer.prototype.drawPolygon = function drawPolygon(shape, options) {
 
 Viewer.prototype.drawChain = function drawChain(shape, options) {
   const lw = options.lineWidth;
-  const { ratio } = options;
+  const { ratio, scaleY } = options;
 
   const vertices = shape.m_vertices;
 
@@ -722,8 +715,8 @@ Viewer.prototype.drawChain = function drawChain(shape, options) {
     const v = vertices[i];
     minX = Math.min(minX, v.x);
     maxX = Math.max(maxX, v.x);
-    minY = Math.min(minY, v.y);
-    maxY = Math.max(maxY, v.y);
+    minY = Math.min(minY, scaleY * v.y);
+    maxY = Math.max(maxY, scaleY * v.y);
   }
 
   const width = maxX - minX;
@@ -737,7 +730,7 @@ Viewer.prototype.drawChain = function drawChain(shape, options) {
     for (let i = 0; i < vertices.length; i += 1) {
       const v = vertices[i];
       const x = (v.x - minX) + lw;
-      const y = (v.y - minY) + lw;
+      const y = (scaleY * v.y - minY) + lw;
       if (i === 0) ctx.moveTo(x, y);
       else ctx.lineTo(x, y);
     }
